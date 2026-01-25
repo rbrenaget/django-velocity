@@ -5,6 +5,7 @@ services:
       target: development
     ports:
       - "8000:8000"
+      - "5678:5678" # debugpy remote debugging port
     volumes:
       - .:/app
       - python-packages:/usr/local/lib/python3.12/site-packages
@@ -13,7 +14,6 @@ services:
     depends_on:
       db:
         condition: service_healthy
-    command: python manage.py runserver 0.0.0.0:8000
 
   db:
     image: postgres:16-alpine

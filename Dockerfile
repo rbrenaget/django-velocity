@@ -9,7 +9,9 @@ FROM python:3.12-slim AS base
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    UV_SYSTEM_PYTHON=1
+    UV_SYSTEM_PYTHON=1 \
+    UV_LINK_MODE=copy \
+    PYDEVD_DISABLE_FILE_VALIDATION=1
 
 WORKDIR /app
 
@@ -19,18 +21,18 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 
 # Install uv
-COPY --from=ghcr.io/astral-sh/uv:latest /uv /usr/local/bin/uv
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 
 # -----------------------------------------------------------------------------
 # Stage 2: Development image
 # -----------------------------------------------------------------------------
 FROM base AS development
 
-# Copy dependency files
-COPY pyproject.toml ./
-
-# Install dependencies including dev
-RUN uv pip install -e ".[dev]"
+# Install dependencies including dev (using pip install for system python)
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --dev --locked
 
 # Copy application code
 COPY . .
@@ -39,18 +41,25 @@ COPY . .
 EXPOSE 8000
 
 # Run development server
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+EXPOSE 5678
+
+# Run with debugpy for VS Code remote debugging
+CMD ["uv", "run", "python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "--wait-for-client", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # -----------------------------------------------------------------------------
 # Stage 3: Production image
 # -----------------------------------------------------------------------------
 FROM base AS production
 
-# Copy dependency files
-COPY pyproject.toml ./
+# Disable development dependencies
+ENV UV_NO_DEV=1
 
 # Install only production dependencies
-RUN uv pip install -e .
+
+RUN --mount=type=cache,target=/root/.cache/uv \
+    --mount=type=bind,source=uv.lock,target=uv.lock \
+    --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
+    uv sync --locked
 
 # Copy application code
 COPY . .
@@ -66,4 +75,4 @@ USER django
 EXPOSE 8000
 
 # Run with gunicorn (add gunicorn to dependencies for production)
-CMD ["python", "-m", "gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]
+CMD ["uv", "run", "python", "-m", "gunicorn", "config.wsgi:application", "--bind", "0.0.0.0:8000"]

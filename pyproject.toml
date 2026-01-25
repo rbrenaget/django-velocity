@@ -19,17 +19,6 @@ dependencies = [
     "django-allauth[mfa,socialaccount]>=65.14.0",
 ]
 
-[project.optional-dependencies]
-dev = [
-    "pytest>=8.0",
-    "pytest-django>=4.8",
-    "pytest-cov>=4.1",
-    "factory-boy>=3.3",
-    "ruff>=0.5",
-    "pre-commit>=3.7",
-    "ipython>=8.0",
-]
-
 [dependency-groups]
 dev = [
     "pytest>=8.0",
@@ -39,6 +28,7 @@ dev = [
     "ruff>=0.5",
     "pre-commit>=3.7",
     "ipython>=8.0",
+    "debugpy>=1.8.19",
 ]
 
 [tool.ruff]
