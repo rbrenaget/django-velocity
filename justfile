@@ -44,7 +44,7 @@ migrate *args:
 
 # Create new migrations
 makemigrations *args:
-    docker compose exec web python manage.py makemigrations {{ args }}
+    docker compose run --rm --user "$(id -u):$(id -g)" web python manage.py makemigrations {{ args }}
 
 # Create superuser
 createsuperuser:
@@ -110,3 +110,7 @@ install:
 # Generate new SECRET_KEY
 secret-key:
     docker compose exec web python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+
+# Fix ownership of all files in the current directory
+fix-perms:
+    sudo chown -R $USER:$USER .
