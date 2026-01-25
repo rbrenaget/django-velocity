@@ -36,27 +36,27 @@ rebuild:
 
 # Run any manage.py command
 manage *args:
-    docker compose exec web python manage.py {{ args }}
+    docker compose exec web uv run python manage.py {{ args }}
 
 # Run migrations
 migrate *args:
-    docker compose exec web python manage.py migrate {{ args }}
+    docker compose exec web uv run python manage.py migrate {{ args }}
 
 # Create new migrations
 makemigrations *args:
-    docker compose run --rm --user "$(id -u):$(id -g)" web python manage.py makemigrations {{ args }}
+    docker compose run --rm --user "$(id -u):$(id -g)" web uv run python manage.py makemigrations {{ args }}
 
 # Create superuser
 createsuperuser:
-    docker compose exec web python manage.py createsuperuser
+    docker compose exec web uv run python manage.py createsuperuser
 
 # Open Django shell (IPython)
 shell:
-    docker compose exec web python manage.py shell
+    docker compose exec web uv run python manage.py shell
 
 # Collect static files
 collectstatic:
-    docker compose run --rm --user "$(id -u):$(id -g)" web python manage.py collectstatic --noinput
+    docker compose run --rm --user "$(id -u):$(id -g)" web uv run python manage.py collectstatic --noinput
 
 # =============================================================================
 # Testing & Quality
@@ -64,23 +64,23 @@ collectstatic:
 
 # Run tests with pytest
 test *args:
-    docker compose exec web pytest {{ args }}
+    docker compose exec web uv run pytest {{ args }}
 
 # Run tests with coverage
 test-cov:
-    docker compose exec web pytest --cov=apps --cov-report=term-missing --cov-report=html
+    docker compose exec web uv run pytest --cov=apps --cov-report=term-missing --cov-report=html
 
 # Run linting with ruff
 lint:
-    docker compose exec web ruff check .
+    docker compose exec web uv run ruff check .
 
 # Run formatting with ruff
 fmt:
-    docker compose exec web ruff format .
+    docker compose exec web uv run ruff format .
 
 # Check formatting without changes
 fmt-check:
-    docker compose exec web ruff format --check .
+    docker compose exec web uv run ruff format --check .
 
 # Run all quality checks
 check: lint fmt-check
