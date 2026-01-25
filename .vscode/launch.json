@@ -1,0 +1,32 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Django (Local)",
+            "type": "debugpy",
+            "request": "launch",
+            "args": [
+                "runserver"
+            ],
+            "django": true,
+            "autoStartBrowser": false,
+            "program": "${workspaceFolder}/manage.py"
+        },
+        {
+            "name": "Python Debugger: Django (Docker)",
+            "type": "debugpy",
+            "request": "attach",
+            "connect": {
+                "host": "localhost",
+                "port": 5678
+            },
+            "pathMappings": [
+                {
+                    "localRoot": "${workspaceFolder}",
+                    "remoteRoot": "/app"
+                }
+            ],
+            "django": true
+        }
+    ]
+}
