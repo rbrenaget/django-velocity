@@ -56,7 +56,7 @@ shell:
 
 # Collect static files
 collectstatic:
-    docker compose exec web python manage.py collectstatic --noinput
+    docker compose run --rm --user "$(id -u):$(id -g)" web python manage.py collectstatic --noinput
 
 # =============================================================================
 # Testing & Quality
