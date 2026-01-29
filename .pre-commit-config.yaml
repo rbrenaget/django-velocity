@@ -17,12 +17,7 @@ repos:
       - id: check-merge-conflict
       - id: debug-statements
 
-  - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.0
-    hooks:
-      - id: mypy
-        additional_dependencies:
-          - django-stubs
-          - djangorestframework-stubs
-        args: [--ignore-missing-imports]
-        exclude: migrations/
+ci:
+  autoupdate_schedule: weekly
+  skip: []
+  submodules: false
