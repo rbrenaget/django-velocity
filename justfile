@@ -114,3 +114,15 @@ secret-key:
 # Fix ownership of all files in the current directory
 fix-perms:
     sudo chown -R $USER:$USER .
+
+# =============================================================================
+# Translations
+# =============================================================================
+
+# Extract translatable strings to .po files
+makemessages *args:
+    docker compose run --rm --user "$(id -u):$(id -g)" -e UV_CACHE_DIR=/tmp web uv run python manage.py makemessages {{ args }}
+
+# Compile .po files to .mo files
+compilemessages:
+    docker compose run --rm --user "$(id -u):$(id -g)" -e UV_CACHE_DIR=/tmp web uv run python manage.py compilemessages

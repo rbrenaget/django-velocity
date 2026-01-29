@@ -3,7 +3,7 @@ Django settings for velocity project - Base Configuration.
 All settings are loaded from environment variables via django-environ.
 """
 
-from .env import BASE_DIR, env
+from config.env import BASE_DIR, env
 
 # =============================================================================
 # Core Settings
@@ -55,6 +55,7 @@ MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
@@ -120,6 +121,26 @@ LANGUAGE_CODE = "en-us"
 TIME_ZONE = "UTC"
 USE_I18N = True
 USE_TZ = True
+
+# Supported languages - uncomment the languages you want to support
+LANGUAGES = [
+    ("en", "English"),
+    # ("fr", "Français"),
+    # ("es", "Español"),
+    # ("de", "Deutsch"),
+    # ("it", "Italiano"),
+    # ("pt", "Português"),
+    # ("nl", "Nederlands"),
+    # ("pl", "Polski"),
+    # ("ru", "Русский"),
+    # ("zh-hans", "简体中文"),
+    # ("ja", "日本語"),
+    # ("ko", "한국어"),
+    # ("ar", "العربية"),
+]
+
+# Path to translation files
+LOCALE_PATHS = [BASE_DIR / "locale"]
 
 # =============================================================================
 # Static Files
