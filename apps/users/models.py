@@ -5,13 +5,12 @@ This module defines the custom User model that should be used
 throughout the application instead of Django's default User.
 """
 
+from apps.core.models import BaseModel
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
 
-from apps.core.models import BaseModel
 
-
-class UserManager(BaseUserManager):
+class UserManager(BaseUserManager["User"]):
     """
     Custom manager for User model with email as the unique identifier.
     """
@@ -69,7 +68,7 @@ class User(AbstractUser, BaseModel):
     """
 
     # Remove username field
-    username = None
+    username = None  # type: ignore[assignment]
 
     # Email as primary identifier
     email = models.EmailField(
@@ -90,7 +89,7 @@ class User(AbstractUser, BaseModel):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []  # Email is already required by USERNAME_FIELD
 
-    objects = UserManager()
+    objects: UserManager["User"] = UserManager()
 
     class Meta:
         verbose_name = "user"

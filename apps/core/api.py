@@ -13,7 +13,6 @@ Usage:
 """
 
 from ninja import NinjaAPI
-from ninja.errors import HttpError
 
 from apps.core.exceptions import ApplicationError
 

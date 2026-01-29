@@ -20,14 +20,17 @@ from __future__ import annotations
 
 import functools
 import logging
-from typing import Any, Callable, ParamSpec, TypeVar
+from collections.abc import Callable
+from typing import Any, ParamSpec, TypeVar
 
 from django.db import transaction
+from django.db.models import Model
 
 logger = logging.getLogger(__name__)
 
 P = ParamSpec("P")
 T = TypeVar("T")
+M = TypeVar("M", bound=Model)
 
 
 def service(func: Callable[P, T]) -> Callable[P, T]:
@@ -63,11 +66,11 @@ def service(func: Callable[P, T]) -> Callable[P, T]:
 
 
 def get_object_or_raise(
-    model_class: type,
+    model_class: type[M],
     exception_class: type[Exception],
     message: str,
     **lookup_kwargs: Any,
-) -> Any:
+) -> M:
     """
     Get an object or raise a custom exception.
 
@@ -79,9 +82,8 @@ def get_object_or_raise(
             pk=user_id
         )
     """
-    from apps.core.exceptions import NotFound
 
     try:
         return model_class.objects.get(**lookup_kwargs)
-    except model_class.DoesNotExist:
-        raise exception_class(message)
+    except model_class.DoesNotExist as e:
+        raise exception_class(message) from e

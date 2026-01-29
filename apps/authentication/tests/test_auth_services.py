@@ -6,9 +6,8 @@ These tests validate the authentication business logic.
 
 import pytest
 
-from apps.core.exceptions import ValidationError, PermissionDenied
 from apps.authentication import services
-from apps.users.models import User
+from apps.core.exceptions import ValidationError
 
 
 @pytest.mark.django_db
@@ -78,7 +77,7 @@ class TestLoginUser:
 
     def test_raises_on_inactive_user(self, user):
         """Test that inactive user cannot authenticate.
-        
+
         Note: Django's authenticate() returns None for inactive users,
         so we get ValidationError (invalid credentials) rather than PermissionDenied.
         """

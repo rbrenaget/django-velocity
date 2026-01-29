@@ -12,7 +12,7 @@ from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from . import services, selectors
+from . import selectors, services
 from .serializers import (
     UserOutputSerializer,
     UserUpdateInputSerializer,
@@ -38,6 +38,10 @@ class MeView(APIView):
     def patch(self, request: Request) -> Response:
         serializer = UserUpdateInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
+
+        from apps.users.models import User
+
+        assert isinstance(request.user, User)
 
         user = services.user_update(
             user=request.user,

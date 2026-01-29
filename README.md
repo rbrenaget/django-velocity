@@ -8,6 +8,7 @@ A modern, opinionated Django boilerplate implementing **Service-Oriented Archite
 - **Custom User Model** - Email-based authentication from day one
 - **JWT Authentication** - Secure token-based auth with refresh tokens
 - **DRF + Django Ninja** - Choose your API framework (DRF primary, Ninja optional)
+- **Modern Admin UI** - Beautiful admin interface with [django-unfold](https://unfoldadmin.com/)
 - **Modern Python** - Python 3.12+, type hints, Ruff for linting
 - **Docker Ready** - Docker Compose setup for development
 - **Testing** - pytest + factory_boy with comprehensive examples
@@ -97,7 +98,8 @@ django-velocity/
 │   │   ├── allauth.py      # django-allauth config
 │   │   ├── email.py        # Email configuration
 │   │   ├── jwt.py          # SimpleJWT settings
-│   │   └── rest_framework.py # DRF settings
+│   │   ├── rest_framework.py # DRF settings
+│   │   └── unfold.py       # Django Unfold admin theme
 │   ├── urls.py
 │   └── wsgi.py
 │
@@ -266,6 +268,7 @@ Django Ninja is included as an optional alternative. To use it:
 | djangorestframework         | REST API (primary)               |
 | django-ninja                | REST API (optional alternative)  |
 | djangorestframework-simplejwt| JWT authentication              |
+| django-unfold               | Modern admin theme               |
 | psycopg 3                   | PostgreSQL adapter               |
 | django-environ              | Environment configuration        |
 | whitenoise                  | Static file serving              |

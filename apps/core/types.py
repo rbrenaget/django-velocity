@@ -6,7 +6,7 @@ Common types used across the application.
 
 from __future__ import annotations
 
-from typing import Any, TypeAlias, TypeVar
+from typing import Any, TypeVar
 
 from django.db.models import Model, QuerySet
 
@@ -14,8 +14,8 @@ from django.db.models import Model, QuerySet
 ModelType = TypeVar("ModelType", bound=Model)
 
 # Common type aliases
-JsonDict: TypeAlias = dict[str, Any]
-JsonList: TypeAlias = list[JsonDict]
+type JsonDict = dict[str, Any]
+type JsonList = list[JsonDict]
 
 # QuerySet with generic type support
-TypedQuerySet: TypeAlias = QuerySet[ModelType]
+type TypedQuerySet[T] = QuerySet[T]

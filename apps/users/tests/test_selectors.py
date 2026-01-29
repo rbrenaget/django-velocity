@@ -7,7 +7,6 @@ These tests validate the read operations for users.
 import pytest
 
 from apps.users import selectors
-from apps.users.models import User
 
 
 @pytest.mark.django_db

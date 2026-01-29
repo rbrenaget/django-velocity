@@ -14,13 +14,13 @@ from apps.users.serializers import UserOutputSerializer
 
 from . import services
 from .serializers import (
+    ChangePasswordInputSerializer,
+    ForgotPasswordInputSerializer,
+    LoginInputSerializer,
     RegisterInputSerializer,
     RegisterOutputSerializer,
-    LoginInputSerializer,
-    TokenOutputSerializer,
-    ForgotPasswordInputSerializer,
     ResetPasswordInputSerializer,
-    ChangePasswordInputSerializer,
+    TokenOutputSerializer,
     VerifyEmailInputSerializer,
 )
 
@@ -93,7 +93,9 @@ class ForgotPasswordView(APIView):
         )
 
         return Response(
-            {"message": "If an account exists with this email, you will receive a password reset link."},
+            {
+                "message": "If an account exists with this email, you will receive a password reset link."
+            },
             status=status.HTTP_200_OK,
         )
 
@@ -136,7 +138,10 @@ class ChangePasswordView(APIView):
         serializer = ChangePasswordInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
+        from apps.users.models import User
         from apps.users.services import user_change_password
+
+        assert isinstance(request.user, User)
 
         user_change_password(
             user=request.user,
@@ -168,6 +173,9 @@ class VerifyEmailView(APIView):
         )
 
         return Response(
-            {"message": "Email verified successfully.", "user": UserOutputSerializer(user).data},
+            {
+                "message": "Email verified successfully.",
+                "user": UserOutputSerializer(user).data,
+            },
             status=status.HTTP_200_OK,
         )

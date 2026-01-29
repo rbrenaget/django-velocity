@@ -9,13 +9,13 @@ from __future__ import annotations
 from pathlib import Path
 
 from allauth.account.models import EmailAddress
-from django.contrib.auth import authenticate
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.core.exceptions import ValidationError, PermissionDenied
+from apps.core.exceptions import PermissionDenied, ValidationError
 from apps.core.services import service
 from apps.users.models import User
 from apps.users.selectors import user_get_by_email
+from django.contrib.auth import authenticate
 
 # =============================================================================
 # Email Template Utilities
@@ -174,6 +174,7 @@ def request_password_reset(*, email: str) -> bool:
         True (always, for security)
     """
     from allauth.account.forms import ResetPasswordForm
+
     from django.http import HttpRequest
 
     # Create a dummy request for allauth
@@ -212,7 +213,7 @@ def confirm_password_reset(*, token: str, uid: str, new_password: str) -> User:
     except (TypeError, ValueError, User.DoesNotExist):
         raise ValidationError(
             message="Invalid reset link.",
-        )
+        ) from None
 
     if not default_token_generator.check_token(user, token):
         raise ValidationError(
@@ -258,4 +259,4 @@ def verify_email(*, key: str) -> User:
         confirmation.confirm(request=None)
         return confirmation.email_address.user
     except Exception:
-        raise ValidationError(message="Invalid or expired verification link.")
+        raise ValidationError(message="Invalid or expired verification link.") from None

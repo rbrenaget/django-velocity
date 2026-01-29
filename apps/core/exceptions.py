@@ -15,7 +15,7 @@ Usage:
 
 from __future__ import annotations
 
-from typing import Any
+from typing import Any, ClassVar
 
 from rest_framework import status
 from rest_framework.response import Response
@@ -32,7 +32,7 @@ class ApplicationError(Exception):
         status_code: HTTP status code for API responses
     """
 
-    status_code = status.HTTP_400_BAD_REQUEST
+    status_code: ClassVar[int] = status.HTTP_400_BAD_REQUEST
 
     def __init__(
         self,
