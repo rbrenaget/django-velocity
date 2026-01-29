@@ -3,6 +3,7 @@ Test settings - Fast tests with in-memory SQLite.
 """
 
 from .base import *  # noqa: F401, F403
+from .base import REST_FRAMEWORK  # noqa: F401
 
 # =============================================================================
 # Test-Optimized Settings

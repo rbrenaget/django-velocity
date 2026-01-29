@@ -3,22 +3,7 @@ Django settings for velocity project - Base Configuration.
 All settings are loaded from environment variables via django-environ.
 """
 
-from pathlib import Path
-
-import environ
-
-# =============================================================================
-# Path Configuration
-# =============================================================================
-BASE_DIR = Path(__file__).resolve().parent.parent.parent
-
-env = environ.Env(
-    DEBUG=(bool, False),
-    ALLOWED_HOSTS=(list, ["localhost", "127.0.0.1"]),
-)
-
-# Read .env file if it exists
-environ.Env.read_env(BASE_DIR / ".env")
+from .env import BASE_DIR, env
 
 # =============================================================================
 # Core Settings
@@ -31,6 +16,10 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS")
 # Application Definition
 # =============================================================================
 DJANGO_APPS = [
+    "unfold",  # Must be before django.contrib.admin
+    "unfold.contrib.filters",  # Optional: enhanced filters
+    "unfold.contrib.forms",  # Optional: enhanced form elements
+    "unfold.contrib.inlines",  # Optional: enhanced inlines
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -116,7 +105,9 @@ DATABASES = {
 AUTH_USER_MODEL = "users.User"
 
 AUTH_PASSWORD_VALIDATORS = [
-    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
+    },
     {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
@@ -145,7 +136,8 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # =============================================================================
 # Third-Party Settings (imported from config/settings/)
 # =============================================================================
-from config.settings.rest_framework import *  # noqa: F401, F403, E402
-from config.settings.jwt import *  # noqa: F401, F403, E402
 from config.settings.allauth import *  # noqa: F401, F403, E402
 from config.settings.email import *  # noqa: F401, F403, E402
+from config.settings.jwt import *  # noqa: F401, F403, E402
+from config.settings.rest_framework import *  # noqa: F401, F403, E402
+from config.settings.unfold import *  # noqa: F401, F403, E402

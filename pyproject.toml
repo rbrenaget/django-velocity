@@ -17,6 +17,7 @@ dependencies = [
     "whitenoise>=6.7",
     "python-dateutil>=2.9.0.post0",
     "django-allauth[mfa,socialaccount]>=65.14.0",
+    "django-unfold>=0.76.0",
 ]
 
 [dependency-groups]
@@ -26,9 +27,13 @@ dev = [
     "pytest-cov>=4.1",
     "factory-boy>=3.3",
     "ruff>=0.5",
+    "mypy>=1.11",
+    "django-stubs>=5.0",
+    "djangorestframework-stubs>=3.15",
     "pre-commit>=3.7",
     "ipython>=8.0",
     "debugpy>=1.8.19",
+    "djlint>=1.36.4",
 ]
 
 [tool.ruff]
@@ -79,3 +84,23 @@ exclude_lines = [
     "if TYPE_CHECKING:",
     "raise NotImplementedError",
 ]
+
+[tool.mypy]
+python_version = "3.13"
+check_untyped_defs = true
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+warn_unused_configs = true
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+
+[[tool.mypy.overrides]]
+module = ["*.migrations.*"]
+ignore_errors = true
+
+[[tool.mypy.overrides]]
+module = ["*.tests.*", "conftest"]
+disallow_untyped_defs = false
+
+[tool.django-stubs]
+django_settings_module = "config.django.test"
