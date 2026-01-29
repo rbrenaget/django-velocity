@@ -10,6 +10,7 @@ FROM python:3.12-slim AS base
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
     UV_SYSTEM_PYTHON=1 \
+    UV_LINK_MODE=copy \
     PYDEVD_DISABLE_FILE_VALIDATION=1
 
 WORKDIR /app
@@ -27,7 +28,9 @@ COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
 # -----------------------------------------------------------------------------
 FROM base AS development
 
-# Install dependencies including dev (using pip install for system python)
+WORKDIR /app
+
+# Install dependencies including dev
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
@@ -43,7 +46,7 @@ EXPOSE 8000
 EXPOSE 5678
 
 # Run with debugpy for VS Code remote debugging
-CMD ["uv", "run", "python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "--wait-for-client", "manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["uv", "run", "python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "manage.py", "runserver", "0.0.0.0:8000"]
 
 # -----------------------------------------------------------------------------
 # Stage 3: Production image
@@ -51,10 +54,12 @@ CMD ["uv", "run", "python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "--wait
 FROM base AS production
 
 # Disable development dependencies
-ENV UV_NO_DEV=1
+ENV UV_NO_DEV=1 \
+    UV_LINK_MODE=copy
+
+WORKDIR /app
 
 # Install only production dependencies
-
 RUN --mount=type=cache,target=/root/.cache/uv \
     --mount=type=bind,source=uv.lock,target=uv.lock \
     --mount=type=bind,source=pyproject.toml,target=pyproject.toml \
