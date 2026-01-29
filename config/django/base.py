@@ -8,9 +8,9 @@ from config.env import BASE_DIR, env
 # =============================================================================
 # Core Settings
 # =============================================================================
-DEBUG = env("DEBUG")
+DEBUG = env("DEBUG", default=False)
 SECRET_KEY = env("SECRET_KEY")
-ALLOWED_HOSTS = env("ALLOWED_HOSTS")
+ALLOWED_HOSTS = env("ALLOWED_HOSTS", default=[])
 
 # =============================================================================
 # Application Definition
@@ -30,6 +30,7 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    "tailwind",
     "rest_framework",
     "rest_framework_simplejwt",
     "ninja",
@@ -41,6 +42,7 @@ THIRD_PARTY_APPS = [
 ]
 
 LOCAL_APPS = [
+    "apps.theme",
     "apps.core",
     "apps.authentication",
     "apps.users",
@@ -161,4 +163,5 @@ from config.settings.allauth import *  # noqa: F401, F403, E402
 from config.settings.email import *  # noqa: F401, F403, E402
 from config.settings.jwt import *  # noqa: F401, F403, E402
 from config.settings.rest_framework import *  # noqa: F401, F403, E402
+from config.settings.tailwind import *  # noqa: F401, F403, E402
 from config.settings.unfold import *  # noqa: F401, F403, E402

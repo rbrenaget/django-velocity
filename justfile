@@ -121,8 +121,15 @@ fix-perms:
 
 # Extract translatable strings to .po files
 makemessages *args:
-    docker compose run --rm --user "$(id -u):$(id -g)" -e UV_CACHE_DIR=/tmp web uv run python manage.py makemessages {{ args }}
+    uv run python manage.py makemessages {{ args }}
 
 # Compile .po files to .mo files
 compilemessages:
-    docker compose run --rm --user "$(id -u):$(id -g)" -e UV_CACHE_DIR=/tmp web uv run python manage.py compilemessages
+    uv run python manage.py compilemessages
+
+# =============================================================================
+# Tailwind
+# =============================================================================
+
+tailwind *args:
+    uv run python manage.py tailwind {{ args }}
