@@ -8,7 +8,8 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from allauth.account.models import EmailAddress
+from allauth.account.forms import ResetPasswordForm
+from allauth.account.models import EmailAddress, EmailConfirmationHMAC
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.core.exceptions import PermissionDenied, ValidationError
@@ -16,6 +17,9 @@ from apps.core.services import service
 from apps.users.models import User
 from apps.users.selectors import user_get_by_email
 from django.contrib.auth import authenticate
+from django.contrib.auth.tokens import default_token_generator
+from django.http import HttpRequest
+from django.utils.http import urlsafe_base64_decode
 
 # =============================================================================
 # Email Template Utilities
@@ -173,10 +177,6 @@ def request_password_reset(*, email: str) -> bool:
     Returns:
         True (always, for security)
     """
-    from allauth.account.forms import ResetPasswordForm
-
-    from django.http import HttpRequest
-
     # Create a dummy request for allauth
     request = HttpRequest()
     request.META["HTTP_HOST"] = "localhost"
@@ -204,9 +204,6 @@ def confirm_password_reset(*, token: str, uid: str, new_password: str) -> User:
     Raises:
         ValidationError: If token is invalid or expired
     """
-    from django.contrib.auth.tokens import default_token_generator
-    from django.utils.http import urlsafe_base64_decode
-
     try:
         user_id = urlsafe_base64_decode(uid).decode()
         user = User.objects.get(pk=user_id)
@@ -249,8 +246,6 @@ def verify_email(*, key: str) -> User:
     Raises:
         ValidationError: If key is invalid
     """
-    from allauth.account.models import EmailConfirmationHMAC
-
     try:
         confirmation = EmailConfirmationHMAC.from_key(key)
         if confirmation is None:

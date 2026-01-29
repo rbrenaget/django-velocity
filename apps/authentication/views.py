@@ -11,6 +11,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.users.serializers import UserOutputSerializer
+from apps.users.services import user_change_password
 
 from . import services
 from .serializers import (
@@ -137,11 +138,6 @@ class ChangePasswordView(APIView):
     def post(self, request: Request) -> Response:
         serializer = ChangePasswordInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
-
-        from apps.users.models import User
-        from apps.users.services import user_change_password
-
-        assert isinstance(request.user, User)
 
         user_change_password(
             user=request.user,

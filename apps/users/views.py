@@ -39,10 +39,6 @@ class MeView(APIView):
         serializer = UserUpdateInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        from apps.users.models import User
-
-        assert isinstance(request.user, User)
-
         user = services.user_update(
             user=request.user,
             **serializer.validated_data,
