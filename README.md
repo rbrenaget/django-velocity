@@ -276,6 +276,19 @@ Django Ninja is included as an optional alternative. To use it:
 | factory-boy                 | Test data generation             |
 | ruff                        | Linting & formatting             |
 
+## 📚 Documentation
+
+This project uses [Zensical](https://zensical.org/) for documentation generation.
+
+```bash
+# Build documentation
+just docs
+
+# Serve documentation locally with hot-reload
+just docs-serve
+# Then open http://localhost:8000
+```
+
 ## 📄 License
 
 MIT

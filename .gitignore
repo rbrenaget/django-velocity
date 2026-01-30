@@ -97,3 +97,6 @@ Thumbs.db
 
 # Docker
 .docker/
+
+# Documentation build output
+site/
