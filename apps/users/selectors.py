@@ -26,10 +26,7 @@ def user_get_by_id(*, user_id: int) -> User | None:
     Returns:
         User instance or None if not found
     """
-    try:
-        return User.objects.get(pk=user_id)
-    except User.DoesNotExist:
-        return None
+    return User.objects.filter(pk=user_id).first()
 
 
 def user_get_by_email(*, email: str) -> User | None:
@@ -42,10 +39,7 @@ def user_get_by_email(*, email: str) -> User | None:
     Returns:
         User instance or None if not found
     """
-    try:
-        return User.objects.get(email__iexact=email)
-    except User.DoesNotExist:
-        return None
+    return User.objects.filter(email__iexact=email).first()
 
 
 def user_list(
