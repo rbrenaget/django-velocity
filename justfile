@@ -133,3 +133,15 @@ compilemessages:
 
 tailwind *args:
     uv run python manage.py tailwind {{ args }}
+
+# =============================================================================
+# Documentation
+# =============================================================================
+
+# Build documentation
+docs:
+    uv run zensical build
+
+# Serve documentation with hot-reload
+docs-serve:
+    uv run zensical serve
