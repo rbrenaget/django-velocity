@@ -11,6 +11,7 @@ urlpatterns = [
     # API v1 - DRF endpoints
     path("api/v1/auth/", include("apps.authentication.urls")),
     path("api/v1/users/", include("apps.users.urls")),
+    path("api/v1/permissions/", include("apps.permissions.urls")),
     # API - Django Ninja (optional alternative)
     path("api/ninja/", core_api.urls),
 ]

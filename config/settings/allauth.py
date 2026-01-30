@@ -15,6 +15,8 @@ AUTHENTICATION_BACKENDS = [
     "django.contrib.auth.backends.ModelBackend",
     # django-allauth
     "allauth.account.auth_backends.AuthenticationBackend",
+    # django-guardian object permissions
+    "guardian.backends.ObjectPermissionBackend",
 ]
 
 # =============================================================================

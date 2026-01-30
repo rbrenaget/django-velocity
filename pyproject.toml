@@ -20,6 +20,7 @@ dependencies = [
     "django-unfold>=0.76.0",
     "django-filter>=25.2",
     "django-tailwind>=4.4.2",
+    "django-guardian>=3.2.0",
 ]
 
 [project.optional-dependencies]

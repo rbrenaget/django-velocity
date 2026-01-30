@@ -34,6 +34,7 @@ THIRD_PARTY_APPS = [
     "rest_framework",
     "rest_framework_simplejwt",
     "ninja",
+    "guardian",
     # django-allauth
     "allauth",
     "allauth.account",
@@ -46,6 +47,7 @@ LOCAL_APPS = [
     "apps.core",
     "apps.authentication",
     "apps.users",
+    "apps.permissions",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -161,6 +163,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # =============================================================================
 from config.settings.allauth import *  # noqa: F401, F403, E402
 from config.settings.email import *  # noqa: F401, F403, E402
+from config.settings.guardian import *  # noqa: F401, F403, E402
 from config.settings.jwt import *  # noqa: F401, F403, E402
 from config.settings.rest_framework import *  # noqa: F401, F403, E402
 from config.settings.tailwind import *  # noqa: F401, F403, E402
