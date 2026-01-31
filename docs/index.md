@@ -8,25 +8,25 @@ Django Velocity is an opinionated Django boilerplate implementing the [HackSoftw
 
 <div class="grid cards" markdown>
 
--   :material-layers-outline:{ .lg .middle } **Service-Oriented Architecture**
+-   **Service-Oriented Architecture**
 
     ---
 
     Business logic in Services & Selectors, not Views. Clear separation of concerns.
 
--   :material-account:{ .lg .middle } **Custom User Model**
+-   **Custom User Model**
 
     ---
 
     Email-based authentication from day one with JWT tokens.
 
--   :material-api:{ .lg .middle } **DRF + Django Ninja**
+-   **DRF + Django Ninja**
 
     ---
 
     Choose your API framework. DRF primary, Ninja optional.
 
--   :material-docker:{ .lg .middle } **Docker Ready**
+-   **Docker Ready**
 
     ---
 
