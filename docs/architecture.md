@@ -4,21 +4,27 @@ Django Velocity follows the **Service-Oriented Architecture** pattern from the [
 
 ## Overview
 
+```mermaid
+flowchart TB
+    subgraph API["API Layer (Views)"]
+        Views["Thin Views<br/>validation → call service/selector → respond"]
+    end
+
+    subgraph Logic["Business Logic"]
+        Services["Services<br/>(Write Operations)<br/>Create, Update, Transactions"]
+        Selectors["Selectors<br/>(Read Operations)<br/>Get, List, Filter, DTOs"]
+    end
+
+    subgraph Data["Data Layer"]
+        Models["Models<br/>Anemic models - schema only"]
+    end
+
+    Views --> Services
+    Views --> Selectors
+    Services --> Models
+    Selectors --> Models
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    API Layer (Views)                        │
-│   Thin views - validation, call service/selector, respond   │
-├──────────────────────────┬──────────────────────────────────┤
-│      Services            │         Selectors                │
-│   (Write Operations)     │      (Read Operations)           │
-│   - Create, Update       │      - Get, List, Filter         │
-│   - Business Logic       │      - Complex Queries           │
-│   - Transactions         │      - DTOs/QuerySets            │
-├──────────────────────────┴──────────────────────────────────┤
-│                    Models (Data Layer)                      │
-│              Anemic models - schema only                    │
-└─────────────────────────────────────────────────────────────┘
-```
+
 
 ## Key Principles
 

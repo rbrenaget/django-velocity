@@ -1,0 +1,44 @@
+# Django Velocity
+
+> Modern Django Boilerplate with Service-Oriented Architecture following HackSoft Django Styleguide.
+
+## Core Files
+
+- [config/django/base.py](config/django/base.py): Django settings
+- [config/celery.py](config/celery.py): Celery configuration
+- [apps/](apps/): Domain applications
+- [docs/](docs/): Documentation
+
+## Key Concepts
+
+- **Service-Oriented Architecture**: Business logic in services (write) and selectors (read), not views
+- **Thin Views**: Views handle validation, call services, return responses
+- **Anemic Models**: Models define schema only, no business logic
+- **Services**: Functions wrapped with @service decorator for transactions
+- **Selectors**: Pure read functions with no side effects
+
+## Project Structure
+
+```
+apps/
+├── core/           # Shared utilities (@service, exceptions)
+├── authentication/ # Auth services (register, login, password reset)
+├── users/          # User management (profile, selectors)
+├── permissions/    # Permission handling
+└── tasks/          # Celery task definitions
+```
+
+## API
+
+- Base URL: `/api/v1/`
+- Authentication: JWT (Bearer token)
+- Register: POST `/api/v1/auth/register/`
+- Login: POST `/api/v1/auth/login/`
+
+## Documentation
+
+- [Getting Started](docs/getting-started.md)
+- [Architecture](docs/architecture.md)
+- [API Reference](docs/api/index.md)
+- [Celery & Tasks](docs/celery.md)
+- [Deployment](docs/deployment.md)

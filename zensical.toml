@@ -41,17 +41,29 @@ Home = "index.md"
 Architecture = "architecture.md"
 
 [[project.nav]]
+"Celery & Tasks" = "celery.md"
+
+[[project.nav]]
 API = [
     { "Overview" = "api/index.md" },
     { "Authentication" = "api/authentication.md" },
     { "Users" = "api/users.md" }
 ]
 
+[[project.nav]]
+Deployment = "deployment.md"
+
+[[project.nav]]
+Contributing = "contributing.md"
+
+
 [project.markdown_extensions]
 pymdownx.highlight = { anchor_linenums = true, line_spans = "__span", pygments_lang_class = true }
 pymdownx.inlinehilite = {}
 pymdownx.snippets = {}
-pymdownx.superfences = {}
+pymdownx.superfences = { custom_fences = [
+    { name = "mermaid", class = "mermaid", format = "pymdownx.superfences.fence_code_format" }
+]}
 pymdownx.tabbed = { alternate_style = true }
 admonition = {}
 pymdownx.details = {}

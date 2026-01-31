@@ -157,4 +157,4 @@ docs:
 
 # Serve documentation with hot-reload
 docs-serve:
-    uv run zensical serve
+    uv run zensical serve -a localhost:8001

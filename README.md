@@ -17,21 +17,27 @@ A modern, opinionated Django boilerplate implementing **Service-Oriented Archite
 
 ## 🏗 Architecture
 
+```mermaid
+flowchart TB
+    subgraph API["API Layer (Views)"]
+        Views["Thin Views<br/>validation → call service/selector → respond"]
+    end
+
+    subgraph Logic["Business Logic"]
+        Services["Services<br/>(Write Operations)"]
+        Selectors["Selectors<br/>(Read Operations)"]
+    end
+
+    subgraph Data["Data Layer"]
+        Models["Models - schema only"]
+    end
+
+    Views --> Services
+    Views --> Selectors
+    Services --> Models
+    Selectors --> Models
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    API Layer (Views)                        │
-│   Thin views - validation, call service/selector, respond   │
-├──────────────────────────┬──────────────────────────────────┤
-│      Services            │         Selectors                │
-│   (Write Operations)     │      (Read Operations)           │
-│   - Create, Update       │      - Get, List, Filter         │
-│   - Business Logic       │      - Complex Queries           │
-│   - Transactions         │      - DTOs/QuerySets            │
-├──────────────────────────┴──────────────────────────────────┤
-│                    Models (Data Layer)                      │
-│              Anemic models - schema only                    │
-└─────────────────────────────────────────────────────────────┘
-```
+
 
 ### Why This Architecture?
 
@@ -283,6 +289,13 @@ Django Ninja is included as an optional alternative. To use it:
 
 This project uses [Zensical](https://zensical.org/) for documentation generation.
 
+- [Getting Started](docs/getting-started.md)
+- [Architecture](docs/architecture.md)
+- [API Reference](docs/api/index.md)
+- [Celery & Tasks](docs/celery.md)
+- [Deployment](docs/deployment.md)
+- [Contributing](docs/contributing.md)
+
 ```bash
 # Build documentation
 just docs
@@ -291,6 +304,10 @@ just docs
 just docs-serve
 # Then open http://localhost:8000
 ```
+
+## 🤝 Contributing
+
+Contributions are welcome! See [Contributing Guide](docs/contributing.md) for details.
 
 ## 📄 License
 
