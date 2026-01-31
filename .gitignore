@@ -100,3 +100,6 @@ Thumbs.db
 
 # Documentation build output
 site/
+
+# Agent
+.agent/

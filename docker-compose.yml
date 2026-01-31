@@ -43,6 +43,38 @@ services:
       timeout: 5s
       retries: 5
 
+  celery-worker:
+    build:
+      context: .
+      target: development
+    command: uv run celery -A config worker -l info
+    volumes:
+      - .:/app
+      - python-packages:/usr/local/lib/python3.12/site-packages
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  celery-beat:
+    build:
+      context: .
+      target: development
+    command: uv run celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - .:/app
+      - python-packages:/usr/local/lib/python3.12/site-packages
+    env_file:
+      - .env
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
 volumes:
   postgres-data:
   redis-data:

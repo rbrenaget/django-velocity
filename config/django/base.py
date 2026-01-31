@@ -35,6 +35,7 @@ THIRD_PARTY_APPS = [
     "rest_framework_simplejwt",
     "ninja",
     "guardian",
+    "django_celery_beat",
     # django-allauth
     "allauth",
     "allauth.account",
@@ -48,6 +49,7 @@ LOCAL_APPS = [
     "apps.authentication",
     "apps.users",
     "apps.permissions",
+    "apps.tasks",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -162,6 +164,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # Third-Party Settings (imported from config/settings/)
 # =============================================================================
 from config.settings.allauth import *  # noqa: F401, F403, E402
+from config.settings.celery import *  # noqa: F401, F403, E402
 from config.settings.email import *  # noqa: F401, F403, E402
 from config.settings.guardian import *  # noqa: F401, F403, E402
 from config.settings.jwt import *  # noqa: F401, F403, E402

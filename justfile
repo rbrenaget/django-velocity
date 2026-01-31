@@ -128,11 +128,24 @@ compilemessages:
     uv run python manage.py compilemessages
 
 # =============================================================================
+# Celery
+# =============================================================================
+
+# View Celery worker logs
+celery-logs:
+    docker compose logs -f celery-worker
+
+# View Celery beat logs
+celery-beat-logs:
+    docker compose logs -f celery-beat
+
+# =============================================================================
 # Tailwind
 # =============================================================================
 
 tailwind *args:
     uv run python manage.py tailwind {{ args }}
+
 
 # =============================================================================
 # Documentation

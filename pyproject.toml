@@ -21,6 +21,8 @@ dependencies = [
     "django-filter>=25.2",
     "django-tailwind>=4.4.2",
     "django-guardian>=3.2.0",
+    "celery[redis]>=5.4",
+    "django-celery-beat @ git+https://github.com/celery/django-celery-beat.git@main",
 ]
 
 [project.optional-dependencies]
