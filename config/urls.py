@@ -2,11 +2,17 @@
 URL configuration for velocity project.
 """
 
-from apps.core.api import api as core_api
 from django.contrib import admin
 from django.urls import include, path
 
+from apps.core.api import api as core_api
+from apps.core.health import HealthCheckView, health_check_simple
+
 urlpatterns = [
+    # Health checks (before any auth middleware)
+    path("health/", HealthCheckView.as_view(), name="health_check"),
+    path("health/live/", health_check_simple, name="health_check_simple"),
+    # Admin
     path("admin/", admin.site.urls),
     # API v1 - DRF endpoints
     path("api/v1/auth/", include("apps.authentication.urls")),
