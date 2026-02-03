@@ -1,0 +1,85 @@
+# =============================================================================
+# Docker Compose for Django Velocity - Production
+# =============================================================================
+# Usage: docker compose -f docker-compose.production.yml up -d
+# =============================================================================
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: dockerfiles/production/Dockerfile
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.django.production
+      # Disable SSL redirect for local production testing
+      - SECURE_SSL_REDIRECT=false
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+  db:
+    image: postgres:16-alpine
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-velocity}
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-postgres}
+    healthcheck:
+      test: [ "CMD-SHELL", "pg_isready -U postgres" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  redis:
+    image: redis:7-alpine
+    volumes:
+      - redis-data:/data
+    healthcheck:
+      test: [ "CMD", "redis-cli", "ping" ]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  celery-worker:
+    build:
+      context: .
+      dockerfile: dockerfiles/production/Dockerfile
+    command: python -m celery -A config worker -l info
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.django.production
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: dockerfiles/production/Dockerfile
+    command: python -m celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    env_file:
+      - .env
+    environment:
+      - DJANGO_SETTINGS_MODULE=config.django.production
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres-data:
+  redis-data:

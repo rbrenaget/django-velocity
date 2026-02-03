@@ -23,6 +23,7 @@ dependencies = [
     "django-guardian>=3.2.0",
     "celery[redis]>=5.4",
     "django-celery-beat @ git+https://github.com/celery/django-celery-beat.git@main",
+    "gunicorn>=23.0",
 ]
 
 [project.optional-dependencies]

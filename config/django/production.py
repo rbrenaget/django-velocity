@@ -8,7 +8,7 @@ from .base import *  # noqa: F401, F403
 # Security Settings
 # =============================================================================
 DEBUG = False
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = env.bool("SECURE_SSL_REDIRECT", default=True)
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_BROWSER_XSS_FILTER = True

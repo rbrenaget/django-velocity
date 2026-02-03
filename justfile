@@ -4,6 +4,9 @@
 
 set dotenv-load := true
 
+# Compose command
+compose := "docker compose -f docker-compose.yml"
+
 # Default: show available commands
 default:
     @just --list
@@ -14,21 +17,29 @@ default:
 
 # Build and start all containers
 up:
-    docker compose up -d --build
+    {{ compose }} up -d --build
 
 # Stop all containers
 down:
-    docker compose down
+    {{ compose }} down
 
 # View logs (optionally for specific service)
 logs service="":
-    docker compose logs -f {{ service }}
+    {{ compose }} logs -f {{ service }}
 
 # Rebuild containers from scratch
 rebuild:
-    docker compose down -v
-    docker compose build --no-cache
-    docker compose up -d
+    {{ compose }} down -v
+    {{ compose }} build --no-cache
+    {{ compose }} up -d
+
+# Build containers only
+build:
+    {{ compose }} build
+
+# Show container status
+ps:
+    {{ compose }} ps
 
 # =============================================================================
 # Django Management Commands
@@ -36,27 +47,27 @@ rebuild:
 
 # Run any manage.py command
 manage *args:
-    docker compose exec web uv run python manage.py {{ args }}
+    {{ compose }} exec web uv run python manage.py {{ args }}
 
 # Run migrations
 migrate *args:
-    docker compose exec web uv run python manage.py migrate {{ args }}
+    {{ compose }} exec web uv run python manage.py migrate {{ args }}
 
 # Create new migrations
 makemigrations *args:
-    docker compose run --rm --user "$(id -u):$(id -g)" web uv run python manage.py makemigrations {{ args }}
+    {{ compose }} run --rm --user "$(id -u):$(id -g)" web uv run python manage.py makemigrations {{ args }}
 
 # Create superuser
 createsuperuser:
-    docker compose exec web uv run python manage.py createsuperuser
+    {{ compose }} exec web uv run python manage.py createsuperuser
 
 # Open Django shell (IPython)
 shell:
-    docker compose exec web uv run python manage.py shell
+    {{ compose }} exec web uv run python manage.py shell
 
 # Collect static files
 collectstatic:
-    docker compose run --rm --user "$(id -u):$(id -g)" web uv run python manage.py collectstatic --noinput
+    {{ compose }} run --rm --user "$(id -u):$(id -g)" web uv run python manage.py collectstatic --noinput
 
 # =============================================================================
 # Testing & Quality
@@ -64,31 +75,31 @@ collectstatic:
 
 # Run tests with pytest
 test *args:
-    docker compose exec web uv run pytest {{ args }}
+    {{ compose }} exec web uv run pytest {{ args }}
 
 # Run tests with coverage
 test-cov:
-    docker compose exec web uv run pytest --cov=apps --cov-report=term-missing --cov-report=html
+    {{ compose }} exec web uv run pytest --cov=apps --cov-report=term-missing --cov-report=html
 
 # Run linting with ruff
 lint:
-    docker compose exec web uv run ruff check .
+    {{ compose }} exec web uv run ruff check .
 
 # Run formatting with ruff
 fmt:
-    docker compose exec web uv run ruff format .
+    {{ compose }} exec web uv run ruff format .
 
 # Check formatting without changes
 fmt-check:
-    docker compose exec web uv run ruff format --check .
+    {{ compose }} exec web uv run ruff format --check .
 
 # Run all quality checks
 check: lint fmt-check
 
 # Fix all auto-fixable issues
 fix:
-    docker compose exec web ruff check --fix .
-    docker compose exec web ruff format .
+    {{ compose }} exec web ruff check --fix .
+    {{ compose }} exec web ruff format .
 
 # =============================================================================
 # Development Utilities
@@ -96,24 +107,28 @@ fix:
 
 # Open bash shell in web container
 bash:
-    docker compose exec web bash
+    {{ compose }} exec web bash
 
 # Open psql shell in db container
 dbshell:
-    docker compose exec db psql -U postgres -d velocity
+    {{ compose }} exec db psql -U postgres -d velocity
 
 # Install dependencies (rebuild web container)
 install:
-    docker compose build web
-    docker compose up -d web
+    {{ compose }} build web
+    {{ compose }} up -d web
 
 # Generate new SECRET_KEY
 secret-key:
-    docker compose exec web python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
+    {{ compose }} exec web python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"
 
 # Fix ownership of all files in the current directory
 fix-perms:
     sudo chown -R $USER:$USER .
+
+# Check health endpoint
+health:
+    @curl -s http://localhost:8000/health/ | python -m json.tool || echo "Health check failed"
 
 # =============================================================================
 # Translations
@@ -133,11 +148,11 @@ compilemessages:
 
 # View Celery worker logs
 celery-logs:
-    docker compose logs -f celery-worker
+    {{ compose }} logs -f celery-worker
 
 # View Celery beat logs
 celery-beat-logs:
-    docker compose logs -f celery-beat
+    {{ compose }} logs -f celery-beat
 
 # =============================================================================
 # Tailwind
@@ -146,6 +161,50 @@ celery-beat-logs:
 tailwind *args:
     uv run python manage.py tailwind {{ args }}
 
+# =============================================================================
+# Production Shortcuts
+# =============================================================================
+
+# Build production images
+prod-build:
+    docker compose -f docker-compose.production.yml build
+
+# Start production containers
+prod-up:
+    docker compose -f docker-compose.production.yml up -d
+
+# Stop production containers
+prod-down:
+    docker compose -f docker-compose.production.yml down
+
+# View production logs
+prod-logs service="":
+    docker compose -f docker-compose.production.yml logs -f {{ service }}
+
+# Run production migrations
+prod-migrate:
+    docker compose -f docker-compose.production.yml exec web python manage.py migrate
+
+# Check production health
+prod-health:
+    @curl -s http://localhost:8000/health/ | python3 -m json.tool || echo "Health check failed"
+
+# Full production test (build, up, health check)
+prod-test:
+    @echo "🔨 Building production images..."
+    docker compose -f docker-compose.production.yml build
+    @echo "🚀 Starting production containers..."
+    docker compose -f docker-compose.production.yml up -d
+    @echo "⏳ Waiting for services to be ready..."
+    sleep 10
+    @echo "🏥 Running health check..."
+    curl -sf http://localhost:8000/health/ && echo "✅ Health check passed" || echo "❌ Health check failed"
+    @echo "📋 Container status:"
+    docker compose -f docker-compose.production.yml ps
+
+# Clean up production containers and volumes
+prod-clean:
+    docker compose -f docker-compose.production.yml down -v --rmi local
 
 # =============================================================================
 # Documentation

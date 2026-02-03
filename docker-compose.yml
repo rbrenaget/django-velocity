@@ -2,7 +2,7 @@ services:
   web:
     build:
       context: .
-      target: development
+      dockerfile: dockerfiles/local/Dockerfile
     ports:
       - "8000:8000"
       - "5678:5678" # debugpy remote debugging port
@@ -46,7 +46,7 @@ services:
   celery-worker:
     build:
       context: .
-      target: development
+      dockerfile: dockerfiles/local/Dockerfile
     command: uv run celery -A config worker -l info
     volumes:
       - .:/app
@@ -62,7 +62,7 @@ services:
   celery-beat:
     build:
       context: .
-      target: development
+      dockerfile: dockerfiles/local/Dockerfile
     command: uv run celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
     volumes:
       - .:/app
