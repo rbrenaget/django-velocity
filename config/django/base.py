@@ -16,6 +16,7 @@ ALLOWED_HOSTS = env("ALLOWED_HOSTS", default=[])
 # Application Definition
 # =============================================================================
 DJANGO_APPS = [
+    "daphne",  # Must be first for ASGI runserver
     "unfold",  # Must be before django.contrib.admin
     "unfold.contrib.filters",  # Optional: enhanced filters
     "unfold.contrib.forms",  # Optional: enhanced form elements
@@ -30,6 +31,7 @@ DJANGO_APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    "channels",
     "tailwind",
     "rest_framework",
     "rest_framework_simplejwt",
@@ -165,6 +167,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 # =============================================================================
 from config.settings.allauth import *  # noqa: F401, F403, E402
 from config.settings.celery import *  # noqa: F401, F403, E402
+from config.settings.channels import *  # noqa: F401, F403, E402
 from config.settings.email import *  # noqa: F401, F403, E402
 from config.settings.guardian import *  # noqa: F401, F403, E402
 from config.settings.jwt import *  # noqa: F401, F403, E402

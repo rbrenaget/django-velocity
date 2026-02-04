@@ -41,6 +41,7 @@ just prod-test
 |----------|---------|-------------|
 | `CELERY_BROKER_URL` | `redis://redis:6379/0` | Redis broker |
 | `CELERY_RESULT_BACKEND` | `redis://redis:6379/0` | Redis results |
+| `CHANNEL_LAYERS_URL` | `redis://redis:6379/1` | Channel layers for WebSockets |
 
 ## Production Docker Architecture
 
@@ -82,23 +83,22 @@ just prod-build
 
 | Service | Description |
 |---------|-------------|
-| `web` | Django app with Gunicorn (gthread workers) |
+| `web` | Django app with Daphne (ASGI for WebSockets) |
 | `db` | PostgreSQL 16 Alpine |
-| `redis` | Redis 7 Alpine for caching/Celery |
+| `redis` | Redis 7 Alpine for caching/Celery/Channels |
 | `celery-worker` | Background task processor |
 | `celery-beat` | Scheduled task scheduler |
 
-## Gunicorn Configuration
+## Daphne Configuration
 
-The production image runs with optimized Gunicorn settings:
+The production image runs with Daphne ASGI server for WebSocket support:
 
 ```bash
-python -m gunicorn config.wsgi:application \
-    --bind 0.0.0.0:8000 \
-    --workers 2 \
-    --threads 4 \
-    --worker-class gthread \
-    --worker-tmp-dir /dev/shm
+python -m daphne config.asgi:application \
+    -b 0.0.0.0 \
+    -p 8000 \
+    --access-log - \
+    --proxy-headers
 ```
 
 ## Security Features
@@ -167,7 +167,7 @@ just prod-migrate
 - [ ] Configure `ALLOWED_HOSTS`
 - [ ] Set `CSRF_TRUSTED_ORIGINS`
 - [ ] Configure PostgreSQL database
-- [ ] Set up Redis for Celery
+- [ ] Set up Redis for Celery and Channels
 - [ ] Configure HTTPS/SSL (or set `SECURE_SSL_REDIRECT=false` for testing)
 - [ ] Set up monitoring/logging
-- [ ] Configure reverse proxy (nginx/traefik) for SSL termination
+- [ ] Configure reverse proxy (nginx/traefik) for SSL termination and WebSocket proxying

@@ -24,6 +24,8 @@ dependencies = [
     "celery[redis]>=5.4",
     "django-celery-beat @ git+https://github.com/celery/django-celery-beat.git@main",
     "gunicorn>=23.0",
+    "channels[daphne]>=4.3",
+    "channels-redis>=4.2",
 ]
 
 [project.optional-dependencies]

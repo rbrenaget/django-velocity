@@ -43,5 +43,5 @@ RUN if [ -f "apps/theme/static_src/package.json" ]; then \
 EXPOSE 8000
 EXPOSE 5678
 
-# Run with debugpy for VS Code remote debugging
-CMD ["uv", "run", "python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "manage.py", "runserver", "0.0.0.0:8000"]
+# Run with Daphne (ASGI) for WebSocket support + debugpy for VS Code debugging
+CMD ["uv", "run", "python", "-m", "debugpy", "--listen", "0.0.0.0:5678", "-m", "daphne", "-b", "0.0.0.0", "-p", "8000", "config.asgi:application"]

@@ -8,6 +8,7 @@ A modern, opinionated Django boilerplate implementing **Service-Oriented Archite
 - **Custom User Model** - Email-based authentication from day one
 - **JWT Authentication** - Secure token-based auth with refresh tokens
 - **DRF + Django Ninja** - Choose your API framework (DRF primary, Ninja optional)
+- **Django Channels** - WebSocket support with Redis channel layers
 - **Celery + Beat** - Async task processing and scheduled tasks with Redis
 - **Modern Admin UI** - Beautiful admin interface with [django-unfold](https://unfoldadmin.com/)
 - **Modern Python** - Python 3.12+, type hints, Ruff for linting

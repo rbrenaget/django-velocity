@@ -120,15 +120,10 @@ EXPOSE 8000
 HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
     CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/')" || exit 1
 
-# Run with gunicorn (using venv directly, no uv run)
-CMD ["python", "-m", "gunicorn", "config.wsgi:application", \
-    "--bind", "0.0.0.0:8000", \
-    "--workers", "2", \
-    "--threads", "4", \
-    "--worker-class", "gthread", \
-    "--worker-tmp-dir", "/dev/shm", \
-    "--access-logfile", "-", \
-    "--error-logfile", "-", \
-    "--capture-output", \
-    "--enable-stdio-inheritance"]
-
+# Run with Daphne (ASGI) for WebSocket support
+CMD ["python", "-m", "daphne", \
+    "-b", "0.0.0.0", \
+    "-p", "8000", \
+    "--access-log", "-", \
+    "--proxy-headers", \
+    "config.asgi:application"]
