@@ -2,6 +2,20 @@
 
 Guide for deploying Django Velocity to production.
 
+## Quick Start
+
+```bash
+# Build and run production environment
+just prod-build
+just prod-up
+
+# Run migrations
+just prod-migrate
+
+# Or run full production test (build, up, health check)
+just prod-test
+```
+
 ## Environment Variables
 
 ### Required
@@ -19,6 +33,7 @@ Guide for deploying Django Velocity to production.
 |----------|-------------|
 | `CSRF_TRUSTED_ORIGINS` | `https://yourdomain.com` |
 | `CORS_ALLOWED_ORIGINS` | `https://yourdomain.com` |
+| `SECURE_SSL_REDIRECT` | Set to `false` for local testing |
 
 ### Services
 
@@ -27,52 +42,88 @@ Guide for deploying Django Velocity to production.
 | `CELERY_BROKER_URL` | `redis://redis:6379/0` | Redis broker |
 | `CELERY_RESULT_BACKEND` | `redis://redis:6379/0` | Redis results |
 
-## Docker Production
+## Production Docker Architecture
 
-### Build Production Image
+The production Docker setup uses a **multi-stage build** for security and performance:
+
+### Build Stages
+
+```
+┌─────────────────────────────────────────────────────────────────┐
+│ Stage 1: node-builder                                           │
+│ - Builds Tailwind CSS with PostCSS                              │
+│ - Uses Node.js 22 Alpine                                        │
+└────────────────────────────┬────────────────────────────────────┘
+                             ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ Stage 2: python-builder                                         │
+│ - Installs production dependencies (UV_NO_DEV=1)                │
+│ - Copies Tailwind CSS from node-builder                         │
+│ - Runs collectstatic                                            │
+└────────────────────────────┬────────────────────────────────────┘
+                             ↓
+┌─────────────────────────────────────────────────────────────────┐
+│ Stage 3: production (Hardened)                                  │
+│ - Minimal runtime dependencies                                  │
+│ - Non-root user (django:1000)                                   │
+│ - Uses venv directly (no uv run)                                │
+│ - Health check enabled                                          │
+└─────────────────────────────────────────────────────────────────┘
+```
+
+### Build Commands
+
+```bash
+# Build production image
+just prod-build
+```
+
+### Services Stack
+
+| Service | Description |
+|---------|-------------|
+| `web` | Django app with Gunicorn (gthread workers) |
+| `db` | PostgreSQL 16 Alpine |
+| `redis` | Redis 7 Alpine for caching/Celery |
+| `celery-worker` | Background task processor |
+| `celery-beat` | Scheduled task scheduler |
+
+## Gunicorn Configuration
+
+The production image runs with optimized Gunicorn settings:
+
+```bash
+python -m gunicorn config.wsgi:application \
+    --bind 0.0.0.0:8000 \
+    --workers 2 \
+    --threads 4 \
+    --worker-class gthread \
+    --worker-tmp-dir /dev/shm
+```
+
+## Security Features
+
+### Container Hardening
+
+- **Non-root user**: Runs as `django` (UID/GID 1000)
+- **Read-only app directory**: Write permissions only where needed
+- **Minimal dependencies**: Only runtime packages installed
+- **No package managers**: pip/apt disabled in production
+
+### Health Check
 
 ```dockerfile
-# Dockerfile target: production
-docker build --target production -t django-velocity:prod .
+HEALTHCHECK --interval=30s --timeout=10s --start-period=5s --retries=3 \
+    CMD python -c "import urllib.request; urllib.request.urlopen('http://localhost:8000/health/')"
 ```
 
-### Docker Compose Production
-
-```yaml
-# docker-compose.prod.yml
-services:
-  web:
-    image: django-velocity:prod
-    environment:
-      - DJANGO_SETTINGS_MODULE=config.django.production
-    env_file:
-      - .env.prod
-    ports:
-      - "80:8000"
-    depends_on:
-      - db
-      - redis
-
-  celery-worker:
-    image: django-velocity:prod
-    command: celery -A config worker -l info
-    env_file:
-      - .env.prod
-
-  celery-beat:
-    image: django-velocity:prod
-    command: celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
-    env_file:
-      - .env.prod
-```
-
-## Security Settings
+### Django Security Settings
 
 Production settings in `config/django/production.py`:
 
 ```python
 DEBUG = False
-SECURE_SSL_REDIRECT = True
+SECURE_SSL_REDIRECT = True  # Set via env var for local testing
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 31536000
@@ -82,23 +133,34 @@ X_FRAME_OPTIONS = "DENY"
 
 ## Static Files
 
-Static files are served via **WhiteNoise**:
+Static files are handled through:
 
-```bash
-# Collect static files
-python manage.py collectstatic --noinput
-```
-
-WhiteNoise is already configured in `MIDDLEWARE` and serves files from `staticfiles/`.
+1. **Tailwind CSS**: Built in `node-builder` stage
+2. **Collectstatic**: Run in `python-builder` stage
+3. **WhiteNoise**: Serves files at runtime from `staticfiles/`
 
 ## Database Migrations
 
 ```bash
-# Run migrations in production
-python manage.py migrate --noinput
+# Run migrations after deployment
+just prod-migrate
 ```
 
-## Checklist
+## Just Commands Reference
+
+| Command | Description |
+|---------|-------------|
+| `just prod-build` | Build production Docker images |
+| `just prod-up` | Start production containers |
+| `just prod-down` | Stop production containers |
+| `just prod-logs` | View all production logs |
+| `just prod-logs web` | View specific service logs |
+| `just prod-migrate` | Run database migrations |
+| `just prod-health` | Check application health |
+| `just prod-test` | Full test (build, up, health check) |
+| `just prod-clean` | Remove containers and volumes |
+
+## Deployment Checklist
 
 - [ ] Set `DEBUG=False`
 - [ ] Generate secure `SECRET_KEY`
@@ -106,7 +168,6 @@ python manage.py migrate --noinput
 - [ ] Set `CSRF_TRUSTED_ORIGINS`
 - [ ] Configure PostgreSQL database
 - [ ] Set up Redis for Celery
-- [ ] Run `collectstatic`
-- [ ] Run database migrations
-- [ ] Configure HTTPS/SSL
+- [ ] Configure HTTPS/SSL (or set `SECURE_SSL_REDIRECT=false` for testing)
 - [ ] Set up monitoring/logging
+- [ ] Configure reverse proxy (nginx/traefik) for SSL termination
