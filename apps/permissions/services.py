@@ -8,14 +8,14 @@ for object-level permissions.
 import logging
 from collections.abc import Sequence
 
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Model
 from guardian.models import GroupObjectPermission, UserObjectPermission
 
 from apps.core.exceptions import ValidationError
 from apps.core.services import service
 from apps.users.models import User
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
-from django.db.models import Model
 
 logger = logging.getLogger(__name__)
 

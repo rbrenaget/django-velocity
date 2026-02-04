@@ -75,31 +75,31 @@ collectstatic:
 
 # Run tests with pytest
 test *args:
-    {{ compose }} exec web uv run pytest {{ args }}
+    uv run pytest {{ args }}
 
 # Run tests with coverage
 test-cov:
-    {{ compose }} exec web uv run pytest --cov=apps --cov-report=term-missing --cov-report=html
+    uv run pytest --cov=apps --cov-report=term-missing --cov-report=html
 
 # Run linting with ruff
 lint:
-    {{ compose }} exec web uv run ruff check .
+    uv run ruff check .
 
 # Run formatting with ruff
 fmt:
-    {{ compose }} exec web uv run ruff format .
+    uv run ruff format .
 
 # Check formatting without changes
 fmt-check:
-    {{ compose }} exec web uv run ruff format --check .
+    uv run ruff format --check .
 
 # Run all quality checks
 check: lint fmt-check
 
 # Fix all auto-fixable issues
 fix:
-    {{ compose }} exec web ruff check --fix .
-    {{ compose }} exec web ruff format .
+    uv run ruff check --fix .
+    uv run ruff format .
 
 # =============================================================================
 # Development Utilities

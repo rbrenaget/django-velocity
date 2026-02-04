@@ -5,12 +5,12 @@ Uses Django's built-in Group model with django-guardian.
 """
 
 import pytest
+from django.contrib.auth.models import Group
 from tests.factories import UserFactory
 
 from apps.core.exceptions import ValidationError
 from apps.permissions import services
 from apps.permissions.tests.factories import GroupFactory
-from django.contrib.auth.models import Group
 
 
 @pytest.mark.django_db

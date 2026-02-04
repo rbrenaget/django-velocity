@@ -5,9 +5,10 @@ This module defines the custom User model that should be used
 throughout the application instead of Django's default User.
 """
 
-from apps.core.models import BaseModel
 from django.contrib.auth.models import AbstractUser, BaseUserManager
 from django.db import models
+
+from apps.core.models import BaseModel
 
 
 class UserManager(BaseUserManager["User"]):

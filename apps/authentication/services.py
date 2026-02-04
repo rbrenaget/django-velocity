@@ -10,16 +10,16 @@ from pathlib import Path
 
 from allauth.account.forms import ResetPasswordForm
 from allauth.account.models import EmailAddress, EmailConfirmationHMAC
+from django.contrib.auth import authenticate
+from django.contrib.auth.tokens import default_token_generator
+from django.http import HttpRequest
+from django.utils.http import urlsafe_base64_decode
 from rest_framework_simplejwt.tokens import RefreshToken
 
 from apps.core.exceptions import PermissionDenied, ValidationError
 from apps.core.services import service
 from apps.users.models import User
 from apps.users.selectors import user_get_by_email
-from django.contrib.auth import authenticate
-from django.contrib.auth.tokens import default_token_generator
-from django.http import HttpRequest
-from django.utils.http import urlsafe_base64_decode
 
 # =============================================================================
 # Email Template Utilities

@@ -52,6 +52,7 @@ dev = [
 target-version = "py312"
 line-length = 88
 src = ["apps", "config"]
+exclude = [".agent"]
 
 [tool.ruff.lint]
 select = [
@@ -68,6 +69,7 @@ select = [
 ]
 ignore = [
     "E501",   # line too long (handled by formatter)
+    "UP047",  # PEP 695 type parameters - too strict for generic decorators
 ]
 
 [tool.ruff.lint.isort]

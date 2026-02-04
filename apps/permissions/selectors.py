@@ -5,6 +5,9 @@ Uses Django's built-in Group/Permission models with django-guardian
 for object-level permission queries.
 """
 
+from django.contrib.auth.models import Group, Permission
+from django.contrib.contenttypes.models import ContentType
+from django.db.models import Model, QuerySet
 from guardian.shortcuts import (
     get_groups_with_perms,
     get_objects_for_user,
@@ -13,9 +16,6 @@ from guardian.shortcuts import (
 )
 
 from apps.users.models import User
-from django.contrib.auth.models import Group, Permission
-from django.contrib.contenttypes.models import ContentType
-from django.db.models import Model, QuerySet
 
 
 def group_get_by_id(*, group_id: int) -> Group | None:

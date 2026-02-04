@@ -4,6 +4,7 @@ Permission API Views - RESTful endpoints for permissions.
 Uses Django's built-in Group/Permission models with django-guardian.
 """
 
+from django.apps import apps
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
@@ -12,7 +13,6 @@ from rest_framework.views import APIView
 
 from apps.core.exceptions import NotFound
 from apps.users import selectors as user_selectors
-from django.apps import apps
 
 from . import selectors, services
 from .serializers import (

@@ -5,9 +5,8 @@ Uses Django's built-in Group model.
 """
 
 import factory
-from faker import Faker
-
 from django.contrib.auth.models import Group
+from faker import Faker
 
 fake = Faker()
 
