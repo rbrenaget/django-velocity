@@ -32,6 +32,7 @@ DJANGO_APPS = [
 
 THIRD_PARTY_APPS = [
     "channels",
+    "corsheaders",
     "tailwind",
     "rest_framework",
     "rest_framework_simplejwt",
@@ -52,6 +53,7 @@ LOCAL_APPS = [
     "apps.users",
     "apps.permissions",
     "apps.tasks",
+    "apps.security",
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
@@ -60,9 +62,11 @@ INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS
 # Middleware
 # =============================================================================
 MIDDLEWARE = [
+    "apps.security.middleware.SecurityHeadersMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "whitenoise.middleware.WhiteNoiseMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
@@ -70,6 +74,8 @@ MIDDLEWARE = [
     "allauth.account.middleware.AccountMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
+    "apps.security.middleware.SessionTrackingMiddleware",
+    "apps.security.middleware.AdminIPRestrictionMiddleware",
 ]
 
 # =============================================================================
@@ -117,9 +123,14 @@ AUTH_PASSWORD_VALIDATORS = [
     {
         "NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"
     },
-    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {
+        "NAME": "django.contrib.auth.password_validation.MinimumLengthValidator",
+        "OPTIONS": {"min_length": 12},
+    },
     {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
     {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+    {"NAME": "apps.security.validators.PasswordStrengthValidator"},
+    {"NAME": "apps.security.validators.BreachCheckValidator"},
 ]
 
 # =============================================================================
@@ -168,9 +179,11 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 from config.settings.allauth import *  # noqa: F401, F403, E402
 from config.settings.celery import *  # noqa: F401, F403, E402
 from config.settings.channels import *  # noqa: F401, F403, E402
+from config.settings.cors import *  # noqa: F401, F403, E402
 from config.settings.email import *  # noqa: F401, F403, E402
 from config.settings.guardian import *  # noqa: F401, F403, E402
 from config.settings.jwt import *  # noqa: F401, F403, E402
 from config.settings.rest_framework import *  # noqa: F401, F403, E402
+from config.settings.security import *  # noqa: F401, F403, E402
 from config.settings.tailwind import *  # noqa: F401, F403, E402
 from config.settings.unfold import *  # noqa: F401, F403, E402

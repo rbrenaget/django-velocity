@@ -26,6 +26,7 @@ dependencies = [
     "gunicorn>=23.0",
     "channels[daphne]>=4.3",
     "channels-redis>=4.2",
+    "django-cors-headers>=4.9.0",
 ]
 
 [project.optional-dependencies]

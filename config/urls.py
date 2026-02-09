@@ -18,6 +18,7 @@ urlpatterns = [
     path("api/v1/auth/", include("apps.authentication.urls")),
     path("api/v1/users/", include("apps.users.urls")),
     path("api/v1/permissions/", include("apps.permissions.urls")),
+    path("api/v1/security/", include("apps.security.urls")),
     # API - Django Ninja (optional alternative)
     path("api/ninja/", core_api.urls),
 ]
