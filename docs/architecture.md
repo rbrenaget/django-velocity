@@ -126,8 +126,7 @@ apps/
 ├── core/                   # Shared utilities
 │   ├── exceptions.py       # Business exception hierarchy
 │   ├── models.py           # BaseModel with timestamps
-│   ├── services.py         # @service decorator
-│   └── api.py              # Django Ninja setup
+│   └── services.py         # @service decorator
 │
 ├── authentication/         # Authentication domain
 │   ├── models.py           # Auth-related models

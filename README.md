@@ -7,7 +7,7 @@ A modern, opinionated Django boilerplate implementing **Service-Oriented Archite
 - **Service-Oriented Architecture** - Business logic in Services & Selectors, not Views
 - **Custom User Model** - Email-based authentication from day one
 - **JWT Authentication** - Secure token-based auth with refresh tokens
-- **DRF + Django Ninja** - Choose your API framework (DRF primary, Ninja optional)
+- **Django REST Framework** - Powerful and flexible REST API framework
 - **Django Channels** - WebSocket support with Redis channel layers
 - **Celery + Beat** - Async task processing and scheduled tasks with Redis
 - **Modern Admin UI** - Beautiful admin interface with [django-unfold](https://unfoldadmin.com/)
@@ -117,8 +117,7 @@ django-velocity/
 │   ├── core/               # Shared utilities
 │   │   ├── exceptions.py   # Business exception hierarchy
 │   │   ├── models.py       # BaseModel with timestamps
-│   │   ├── services.py     # @service decorator
-│   │   └── api.py          # Django Ninja setup
+│   │   └── services.py     # @service decorator
 │   │
 │   ├── authentication/     # Authentication domain
 │   │   ├── models.py       # Auth-related models
@@ -222,11 +221,7 @@ class RegisterView(APIView):
 | GET    | `/api/v1/users/me/`            | Get current user     |
 | PATCH  | `/api/v1/users/me/`            | Update profile       |
 
-### Django Ninja (Optional)
 
-| Method | Endpoint             | Description          |
-|--------|----------------------|----------------------|
-| GET    | `/api/ninja/health`  | Health check         |
 
 ## 🗄️ Database Backups
 
@@ -275,21 +270,14 @@ SECRET_KEY=your-secret-key
 DATABASE_URL=postgres://postgres:postgres@db:5432/velocity
 ```
 
-### Using Django Ninja Instead of DRF
 
-Django Ninja is included as an optional alternative. To use it:
-
-1. Add your endpoints in `apps/<domain>/api_ninja.py`
-2. Register routers in `apps/core/api.py`
-3. Access at `/api/ninja/`
 
 ## 📦 Dependencies
 
 | Package                      | Purpose                          |
 |-----------------------------|----------------------------------|
 | Django 6.0+                 | Web framework                    |
-| djangorestframework         | REST API (primary)               |
-| django-ninja                | REST API (optional alternative)  |
+| djangorestframework         | REST API framework               |
 | djangorestframework-simplejwt| JWT authentication              |
 | celery                      | Async task processing            |
 | django-celery-beat          | Scheduled/periodic tasks         |

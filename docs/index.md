@@ -20,11 +20,11 @@ Django Velocity is an opinionated Django boilerplate implementing the [HackSoftw
 
     Email-based authentication from day one with JWT tokens.
 
--   **DRF + Django Ninja**
+-   **Django REST Framework**
 
     ---
 
-    Choose your API framework. DRF primary, Ninja optional.
+    Powerful and flexible REST API framework with JWT authentication.
 
 -   **Docker Ready**
 

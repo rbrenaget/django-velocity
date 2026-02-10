@@ -1,6 +1,6 @@
 # API Reference
 
-Django Velocity provides RESTful APIs built with Django REST Framework, with optional Django Ninja endpoints.
+Django Velocity provides RESTful APIs built with Django REST Framework.
 
 ## Base URL
 
@@ -42,14 +42,6 @@ Authorization: Bearer <access_token>
 | PATCH | `/api/v1/users/me/` | Update profile |
 
 [Learn more →](users.md)
-
-## Django Ninja (Optional)
-
-Alternative API endpoints are available at `/api/ninja/`:
-
-| Method | Endpoint | Description |
-|--------|----------|-------------|
-| GET | `/api/ninja/health` | Health check |
 
 ## Error Responses
 

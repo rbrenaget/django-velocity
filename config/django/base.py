@@ -36,7 +36,6 @@ THIRD_PARTY_APPS = [
     "tailwind",
     "rest_framework",
     "rest_framework_simplejwt",
-    "ninja",
     "guardian",
     "django_celery_beat",
     # django-allauth
