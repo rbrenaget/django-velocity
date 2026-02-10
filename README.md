@@ -90,6 +90,8 @@ just test-cov     # Run tests with coverage
 just lint         # Run Ruff linter
 just fmt          # Format code with Ruff
 just manage <cmd> # Run any manage.py command
+just db-backup    # Create a database backup
+just db-restore <file>  # Restore from backup
 ```
 
 ## 📁 Project Structure
@@ -226,6 +228,19 @@ class RegisterView(APIView):
 |--------|----------------------|----------------------|
 | GET    | `/api/ninja/health`  | Health check         |
 
+## 🗄️ Database Backups
+
+CLI-based PostgreSQL backup system with `just` commands:
+
+```bash
+just db-backup          # Create backup (non-blocking, no downtime)
+just db-backup-list     # List available backups
+just db-restore <file>  # Restore (stops services automatically)
+just db-backup-cleanup  # Remove old backups
+```
+
+See [Database Backups](docs/backups.md) for full details.
+
 ## 🧪 Testing
 
 ```bash
@@ -294,6 +309,7 @@ This project uses [Zensical](https://zensical.org/) for documentation generation
 - [Architecture](docs/architecture.md)
 - [API Reference](docs/api/index.md)
 - [Celery & Tasks](docs/celery.md)
+- [Database Backups](docs/backups.md)
 - [Deployment](docs/deployment.md)
 - [Contributing](docs/contributing.md)
 

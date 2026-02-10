@@ -19,6 +19,8 @@ services:
     image: postgres:16-alpine
     volumes:
       - postgres-data:/var/lib/postgresql/data
+      - backup-data:/backups
+      - ./scripts:/scripts:ro
     environment:
       POSTGRES_DB: velocity
       POSTGRES_USER: postgres
@@ -79,3 +81,4 @@ volumes:
   postgres-data:
   redis-data:
   python-packages:
+  backup-data:

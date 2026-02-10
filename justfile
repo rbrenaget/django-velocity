@@ -162,6 +162,32 @@ tailwind *args:
     uv run python manage.py tailwind {{ args }}
 
 # =============================================================================
+# Database Backup
+# =============================================================================
+
+# Create a database backup (non-blocking, no downtime)
+db-backup:
+    {{ compose }} exec db /scripts/backup.sh
+
+# Restore from a backup (⚠️ stops services → restore → restarts)
+db-restore filename:
+    @echo "⚠️  This will stop all services and restore the database."
+    @echo "   Press Ctrl+C to cancel, or wait 5 seconds to continue..."
+    @sleep 5
+    {{ compose }} stop web celery-worker celery-beat
+    {{ compose }} exec db /scripts/restore.sh {{ filename }}
+    {{ compose }} start web celery-worker celery-beat
+    @echo "🟢 All services restarted."
+
+# List available backups
+db-backup-list:
+    {{ compose }} exec db ls -lht /backups/
+
+# Cleanup old backups (age + count limits)
+db-backup-cleanup:
+    {{ compose }} exec db /scripts/cleanup.sh
+
+# =============================================================================
 # Production Shortcuts
 # =============================================================================
 
