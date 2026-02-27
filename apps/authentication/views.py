@@ -5,17 +5,13 @@ Thin views delegating to authentication services.
 """
 
 from rest_framework import status
-from rest_framework.permissions import AllowAny, IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from apps.users.serializers import UserOutputSerializer
-from apps.users.services import user_change_password
-
 from . import services
 from .serializers import (
-    ChangePasswordInputSerializer,
     ForgotPasswordInputSerializer,
     LoginInputSerializer,
     RegisterInputSerializer,
@@ -126,31 +122,6 @@ class ResetPasswordView(APIView):
         )
 
 
-class ChangePasswordView(APIView):
-    """
-    Change password for authenticated user.
-
-    POST /api/v1/auth/change-password/
-    """
-
-    permission_classes = [IsAuthenticated]
-
-    def post(self, request: Request) -> Response:
-        serializer = ChangePasswordInputSerializer(data=request.data)
-        serializer.is_valid(raise_exception=True)
-
-        user_change_password(
-            user=request.user,
-            current_password=serializer.validated_data["current_password"],
-            new_password=serializer.validated_data["new_password"],
-        )
-
-        return Response(
-            {"message": "Password changed successfully."},
-            status=status.HTTP_200_OK,
-        )
-
-
 class VerifyEmailView(APIView):
     """
     Email verification endpoint (uses allauth).
@@ -167,6 +138,8 @@ class VerifyEmailView(APIView):
         user = services.verify_email(
             key=serializer.validated_data["key"],
         )
+
+        from apps.users.serializers import UserOutputSerializer
 
         return Response(
             {

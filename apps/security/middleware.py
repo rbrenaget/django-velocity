@@ -9,6 +9,9 @@ from collections.abc import Callable
 
 from django.conf import settings
 from django.http import HttpRequest, HttpResponse, HttpResponseForbidden
+from django.utils import timezone
+
+from apps.core.utils import get_client_ip
 
 from .models import UserSession
 from .selectors import ip_is_allowed
@@ -82,7 +85,7 @@ class AdminIPRestrictionMiddleware:
         if not request.path.startswith(admin_prefix):
             return self.get_response(request)
 
-        ip_address = self._get_client_ip(request)
+        ip_address = get_client_ip(request) or ""
 
         if not ip_is_allowed(ip_address=ip_address):
             logger.warning(f"Admin access denied for IP {ip_address} at {request.path}")
@@ -91,13 +94,6 @@ class AdminIPRestrictionMiddleware:
             )
 
         return self.get_response(request)
-
-    def _get_client_ip(self, request: HttpRequest) -> str:
-        """Extract client IP from request."""
-        x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-        if x_forwarded_for:
-            return x_forwarded_for.split(",")[0].strip()
-        return request.META.get("REMOTE_ADDR", "")
 
 
 class SessionTrackingMiddleware:
@@ -125,8 +121,6 @@ class SessionTrackingMiddleware:
             session_key=session_key,
             user=request.user,
             is_active=True,
-        ).update(
-            last_activity=__import__("django.utils.timezone", fromlist=["now"]).now()
-        )
+        ).update(last_activity=timezone.now())
 
         return response

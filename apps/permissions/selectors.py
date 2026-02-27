@@ -5,6 +5,7 @@ Uses Django's built-in Group/Permission models with django-guardian
 for object-level permission queries.
 """
 
+from django.apps import apps
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
 from django.db.models import Model, QuerySet
@@ -157,3 +158,39 @@ def permission_list_for_content_type(
     """Get all permissions for a specific model."""
     content_type = ContentType.objects.get_for_model(model_class)
     return Permission.objects.filter(content_type=content_type)
+
+
+def get_object_by_content_type(
+    *,
+    content_type_str: str,
+    object_id: int,
+) -> Model:
+    """
+    Fetch an object from a content_type string and ID.
+
+    Args:
+        content_type_str: "app_label.model" format (e.g. "users.user")
+        object_id: The object's primary key
+
+    Returns:
+        The model instance
+
+    Raises:
+        NotFound: If content type is invalid or object doesn't exist
+    """
+    from apps.core.exceptions import NotFound
+
+    try:
+        app_label, model = content_type_str.split(".")
+        model_class = apps.get_model(app_label, model)
+    except (ValueError, LookupError) as e:
+        raise NotFound(
+            message=f"Invalid content type: {content_type_str}",
+        ) from e
+
+    try:
+        return model_class.objects.get(pk=object_id)
+    except model_class.DoesNotExist as e:
+        raise NotFound(
+            message=f"Object not found: {content_type_str} #{object_id}",
+        ) from e

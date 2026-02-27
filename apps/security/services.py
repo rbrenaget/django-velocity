@@ -17,6 +17,7 @@ from django.utils import timezone
 
 from apps.core.exceptions import NotFound, PermissionDenied, ValidationError
 from apps.core.services import service
+from apps.core.utils import get_client_ip
 from apps.users.models import User
 
 from .models import AdminIPAllowlist, UserSession
@@ -62,22 +63,6 @@ def _parse_user_agent(user_agent: str) -> str:
     return f"{browser} on {os}"
 
 
-def _get_client_ip(request: HttpRequest) -> str | None:
-    """
-    Extract client IP from request headers.
-
-    Args:
-        request: The HTTP request
-
-    Returns:
-        Client IP address or None
-    """
-    x_forwarded_for = request.META.get("HTTP_X_FORWARDED_FOR")
-    if x_forwarded_for:
-        return x_forwarded_for.split(",")[0].strip()
-    return request.META.get("REMOTE_ADDR")
-
-
 @service
 def session_create(*, user: User, request: HttpRequest) -> UserSession:
     """
@@ -98,7 +83,7 @@ def session_create(*, user: User, request: HttpRequest) -> UserSession:
         session_key = request.session.session_key
 
     user_agent = request.META.get("HTTP_USER_AGENT", "")
-    ip_address = _get_client_ip(request)
+    ip_address = get_client_ip(request)
     device_info = _parse_user_agent(user_agent)
 
     session, created = UserSession.objects.update_or_create(

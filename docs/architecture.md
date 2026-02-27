@@ -110,6 +110,18 @@ class User(AbstractUser):
         ordering = ["-date_joined"]
 ```
 
+## Layer Rules
+
+| Rule | Description |
+|------|-------------|
+| **Views → Services/Selectors** | Views must ONLY call services (writes) or selectors (reads). No direct ORM in views. |
+| **Selectors never write** | Selectors are pure read operations. They must NEVER modify data. |
+| **Services own transactions** | All write operations use the `@service` decorator for atomic transactions. |
+| **No business logic in models** | Models are "anemic" — schema only. Business rules live in services. |
+| **Cross-domain reads via selectors** | Reading from another domain is fine (e.g., `users.selectors` from `authentication`). |
+| **No cross-domain writes** | Write operations should stay within their domain boundary. |
+| **Shared utilities in `core/`** | Common helpers (`get_client_ip`, `BaseModel`, `@service`) live in `apps/core/`. |
+
 ## Why This Architecture?
 
 | Traditional Django | Service-Oriented |
@@ -126,18 +138,37 @@ apps/
 ├── core/                   # Shared utilities
 │   ├── exceptions.py       # Business exception hierarchy
 │   ├── models.py           # BaseModel with timestamps
-│   └── services.py         # @service decorator
+│   ├── services.py         # @service decorator
+│   ├── types.py            # Common type aliases
+│   └── utils.py            # Shared helpers (get_client_ip, etc.)
 │
 ├── authentication/         # Authentication domain
-│   ├── models.py           # Auth-related models
 │   ├── services.py         # register_user, login_user...
-│   ├── selectors.py        # Auth queries
+│   ├── selectors.py        # Auth-specific queries
 │   ├── serializers.py      # Request/Response serializers
-│   └── views.py            # API endpoints
+│   ├── views.py            # API endpoints
+│   └── urls.py             # /api/v1/auth/...
 │
-└── users/                  # User domain
-    ├── models.py           # Custom User model
-    ├── services.py         # user_update, user_change_password...
-    ├── selectors.py        # user_get_by_email, user_list...
-    └── views.py            # User profile endpoints
+├── users/                  # User domain
+│   ├── models.py           # Custom User model
+│   ├── services.py         # user_update, user_change_password...
+│   ├── selectors.py        # user_get_by_email, user_list...
+│   ├── views.py            # User profile + change password endpoints
+│   └── urls.py             # /api/v1/users/...
+│
+├── permissions/            # Permission domain
+│   ├── services.py         # RBAC + object-level permissions
+│   ├── selectors.py        # Permission queries, content type lookups
+│   ├── views.py            # Permission management endpoints
+│   └── urls.py             # /api/v1/permissions/...
+│
+└── security/               # Security domain
+    ├── models.py           # UserSession, AdminIPAllowlist
+    ├── services.py         # Session mgmt, GDPR, IP allowlisting
+    ├── selectors.py        # Session & IP queries
+    ├── middleware.py        # Security headers, IP restriction, session tracking
+    ├── validators.py       # Password strength, breach checking
+    ├── tasks.py            # Security-related Celery tasks
+    ├── views.py            # Security management endpoints
+    └── urls.py             # /api/v1/security/...
 ```

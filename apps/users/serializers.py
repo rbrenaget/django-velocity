@@ -34,3 +34,17 @@ class UserUpdateInputSerializer(serializers.Serializer):
 
     first_name = serializers.CharField(max_length=150, required=False)
     last_name = serializers.CharField(max_length=150, required=False)
+
+
+class ChangePasswordInputSerializer(serializers.Serializer):
+    """Serializer for authenticated password change."""
+
+    current_password = serializers.CharField(
+        write_only=True,
+        style={"input_type": "password"},
+    )
+    new_password = serializers.CharField(
+        min_length=8,
+        write_only=True,
+        style={"input_type": "password"},
+    )

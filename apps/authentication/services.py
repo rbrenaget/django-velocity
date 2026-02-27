@@ -125,6 +125,7 @@ def register_user(
 # =============================================================================
 
 
+@service
 def login_user(*, email: str, password: str) -> dict:
     """
     Authenticate user and return JWT tokens.
@@ -164,6 +165,7 @@ def login_user(*, email: str, password: str) -> dict:
 # =============================================================================
 
 
+@service
 def request_password_reset(*, email: str) -> bool:
     """
     Request a password reset using allauth.
@@ -233,6 +235,7 @@ def confirm_password_reset(*, token: str, uid: str, new_password: str) -> User:
 # =============================================================================
 
 
+@service
 def verify_email(*, key: str) -> User:
     """
     Verify email address using allauth confirmation key.

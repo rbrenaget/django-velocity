@@ -64,20 +64,6 @@ class ResetPasswordInputSerializer(serializers.Serializer):
     )
 
 
-class ChangePasswordInputSerializer(serializers.Serializer):
-    """Serializer for authenticated password change."""
-
-    current_password = serializers.CharField(
-        write_only=True,
-        style={"input_type": "password"},
-    )
-    new_password = serializers.CharField(
-        min_length=8,
-        write_only=True,
-        style={"input_type": "password"},
-    )
-
-
 class VerifyEmailInputSerializer(serializers.Serializer):
     """Serializer for email verification."""
 

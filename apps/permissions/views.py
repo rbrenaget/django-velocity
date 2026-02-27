@@ -4,7 +4,6 @@ Permission API Views - RESTful endpoints for permissions.
 Uses Django's built-in Group/Permission models with django-guardian.
 """
 
-from django.apps import apps
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
 from rest_framework.request import Request
@@ -164,9 +163,9 @@ class PermissionAssignApi(APIView):
         if user is None:
             raise NotFound(message="User not found.")
 
-        obj = _get_object_from_content_type(
-            data["content_type"],
-            data["object_id"],
+        obj = selectors.get_object_by_content_type(
+            content_type_str=data["content_type"],
+            object_id=data["object_id"],
         )
 
         services.permission_assign(
@@ -198,9 +197,9 @@ class PermissionRevokeApi(APIView):
         if user is None:
             raise NotFound(message="User not found.")
 
-        obj = _get_object_from_content_type(
-            data["content_type"],
-            data["object_id"],
+        obj = selectors.get_object_by_content_type(
+            content_type_str=data["content_type"],
+            object_id=data["object_id"],
         )
 
         services.permission_revoke(
@@ -229,9 +228,9 @@ class PermissionAssignBulkApi(APIView):
         if user is None:
             raise NotFound(message="User not found.")
 
-        obj = _get_object_from_content_type(
-            data["content_type"],
-            data["object_id"],
+        obj = selectors.get_object_by_content_type(
+            content_type_str=data["content_type"],
+            object_id=data["object_id"],
         )
 
         services.permissions_assign_bulk(
@@ -263,9 +262,9 @@ class PermissionCheckApi(APIView):
         if user is None:
             raise NotFound(message="User not found.")
 
-        obj = _get_object_from_content_type(
-            data["content_type"],
-            data["object_id"],
+        obj = selectors.get_object_by_content_type(
+            content_type_str=data["content_type"],
+            object_id=data["object_id"],
         )
 
         has_perm = selectors.permission_check(
@@ -305,7 +304,10 @@ class UserPermissionsApi(APIView):
         if user is None:
             raise NotFound(message="User not found.")
 
-        obj = _get_object_from_content_type(content_type, object_id)
+        obj = selectors.get_object_by_content_type(
+            content_type_str=content_type,
+            object_id=object_id,
+        )
 
         permissions = selectors.permission_list_for_user(user=user, obj=obj)
 
@@ -318,21 +320,3 @@ class UserPermissionsApi(APIView):
             ).data,
             status=status.HTTP_200_OK,
         )
-
-
-def _get_object_from_content_type(content_type_str: str, object_id: int):
-    """Helper to fetch an object from content_type string and ID."""
-    try:
-        app_label, model = content_type_str.split(".")
-        model_class = apps.get_model(app_label, model)
-    except (ValueError, LookupError) as e:
-        raise NotFound(
-            message=f"Invalid content type: {content_type_str}",
-        ) from e
-
-    try:
-        return model_class.objects.get(pk=object_id)
-    except model_class.DoesNotExist as e:
-        raise NotFound(
-            message=f"Object not found: {content_type_str} #{object_id}",
-        ) from e

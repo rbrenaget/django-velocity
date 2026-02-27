@@ -14,6 +14,11 @@ app_name = "users"
 urlpatterns = [
     # Current user profile
     path("me/", views.MeView.as_view(), name="me"),
+    path(
+        "me/change-password/",
+        views.ChangePasswordView.as_view(),
+        name="change-password",
+    ),
     # User listing (admin)
-    path("", views.user_list_view, name="list"),
+    path("", views.UserListApi.as_view(), name="list"),
 ]

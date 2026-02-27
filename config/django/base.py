@@ -51,7 +51,6 @@ LOCAL_APPS = [
     "apps.authentication",
     "apps.users",
     "apps.permissions",
-    "apps.tasks",
     "apps.security",
 ]
 
