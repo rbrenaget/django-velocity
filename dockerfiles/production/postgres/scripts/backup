@@ -4,13 +4,13 @@
 # Creates a compressed pg_dump backup in custom format.
 # Non-blocking: users can continue working during backup.
 #
-# Usage: /scripts/backup.sh
+# Usage: backup
 # Output: /backups/velocity_YYYY-MM-DD_HHMMSS.dump
 # =============================================================================
 
 set -euo pipefail
 
-BACKUP_DIR="/backups"
+BACKUP_DIR="${BACKUP_DIR:-/backups}"
 DB_NAME="${POSTGRES_DB:-velocity}"
 DB_USER="${POSTGRES_USER:-postgres}"
 TIMESTAMP=$(date +"%Y-%m-%d_%H%M%S")

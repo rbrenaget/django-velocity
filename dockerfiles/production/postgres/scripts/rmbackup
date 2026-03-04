@@ -1,0 +1,32 @@
+#!/bin/bash
+# =============================================================================
+# Database Remove Backup Script
+# Removes a specific backup file or all backups.
+#
+# Usage: rmbackup <filename>
+# Example: rmbackup velocity_2026-02-10_095800.dump
+# =============================================================================
+
+set -euo pipefail
+
+BACKUP_DIR="${BACKUP_DIR:-/backups}"
+
+if [ $# -eq 0 ]; then
+    echo "❌ Error: No backup filename provided."
+    echo "Usage: rmbackup <filename>"
+    echo ""
+    echo "Available backups:"
+    list
+    exit 1
+fi
+
+FILENAME="$1"
+FILEPATH="${BACKUP_DIR}/${FILENAME}"
+
+if [ ! -f "${FILEPATH}" ]; then
+    echo "❌ Error: Backup file not found: ${FILEPATH}"
+    exit 1
+fi
+
+rm -f "${FILEPATH}"
+echo "✅ Deleted backup successfully: ${FILENAME}"

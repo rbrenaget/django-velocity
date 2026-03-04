@@ -1,0 +1,26 @@
+#!/bin/bash
+# =============================================================================
+# Database Backups List Script
+#
+# Usage: list
+# =============================================================================
+
+set -euo pipefail
+
+BACKUP_DIR="${BACKUP_DIR:-/backups}"
+
+if [ ! -d "${BACKUP_DIR}" ]; then
+    echo "❌ Error: Backup directory not found at ${BACKUP_DIR}"
+    exit 1
+fi
+
+COUNT=$(ls -1q "${BACKUP_DIR}"/*.dump 2>/dev/null | wc -l || true)
+if [ "${COUNT}" -eq 0 ]; then
+    echo "📭 No backups found in ${BACKUP_DIR}"
+    exit 0
+fi
+
+echo "📦 Available backups in ${BACKUP_DIR} (${COUNT}):"
+echo "----------------------------------------------------------------------"
+ls -lht "${BACKUP_DIR}"/*.dump | awk '{ print $9 "\t" $5 "\t" $6 " " $7 " " $8 }' | sed "s|${BACKUP_DIR}/||"
+echo "----------------------------------------------------------------------"

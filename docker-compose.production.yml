@@ -8,26 +8,43 @@ services:
   web:
     build:
       context: .
-      dockerfile: dockerfiles/production/Dockerfile
-    ports:
-      - "8000:8000"
+      dockerfile: dockerfiles/production/django/Dockerfile
+    volumes:
+      - django-static:/app/staticfiles
+      - django-media:/app/media
     env_file:
       - .env
     environment:
       - DJANGO_SETTINGS_MODULE=config.django.production
-      # Disable SSL redirect for local production testing
+      # Disable SSL redirect for local production testing via Nginx HTTP
       - SECURE_SSL_REDIRECT=false
     depends_on:
       db:
         condition: service_healthy
     restart: unless-stopped
 
+  nginx:
+    build:
+      context: .
+      dockerfile: dockerfiles/production/nginx/Dockerfile
+    ports:
+      - "80:80"
+      - "443:443"
+    depends_on:
+      - web
+    volumes:
+      - django-static:/app/staticfiles
+      - django-media:/app/media
+      # - certbot-etc:/etc/letsencrypt # Uncomment if using Certbot locally
+    restart: unless-stopped
+
   db:
-    image: postgres:16-alpine
+    build:
+      context: .
+      dockerfile: dockerfiles/production/postgres/Dockerfile
     volumes:
       - postgres-data:/var/lib/postgresql/data
       - backup-data:/backups
-      - ./scripts:/scripts:ro
     environment:
       POSTGRES_DB: ${POSTGRES_DB:-velocity}
       POSTGRES_USER: ${POSTGRES_USER:-postgres}
@@ -55,8 +72,8 @@ services:
   celery-worker:
     build:
       context: .
-      dockerfile: dockerfiles/production/Dockerfile
-    command: python -m celery -A config worker -l info
+      dockerfile: dockerfiles/production/django/Dockerfile
+    command: /start-celeryworker
     env_file:
       - .env
     environment:
@@ -71,8 +88,8 @@ services:
   celery-beat:
     build:
       context: .
-      dockerfile: dockerfiles/production/Dockerfile
-    command: python -m celery -A config beat -l info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+      dockerfile: dockerfiles/production/django/Dockerfile
+    command: /start-celerybeat
     env_file:
       - .env
     environment:
@@ -88,3 +105,5 @@ volumes:
   postgres-data:
   redis-data:
   backup-data:
+  django-static:
+  django-media:

@@ -3,7 +3,7 @@
 # Backup Cleanup Script
 # Prunes old backups based on age and count limits.
 #
-# Usage: /scripts/cleanup.sh
+# Usage: cleanup
 # Env vars:
 #   BACKUP_MAX_AGE_DAYS  (default: 30)
 #   BACKUP_MAX_COUNT     (default: 50)

@@ -83,8 +83,9 @@ just prod-build
 
 | Service | Description |
 |---------|-------------|
-| `web` | Django app with Daphne (ASGI for WebSockets) |
-| `db` | PostgreSQL 16 Alpine |
+| `nginx` | Reverse Proxy handling Ports 80/443, SSL/TLS, and Static/Media files |
+| `web` | Django app with Daphne (ASGI for WebSockets), internal only |
+| `db` | Custom PostgreSQL 16 Alpine with built-in backup scripts |
 | `redis` | Redis 7 Alpine for caching/Celery/Channels |
 | `celery-worker` | Background task processor |
 | `celery-beat` | Scheduled task scheduler |
@@ -131,13 +132,14 @@ SECURE_HSTS_INCLUDE_SUBDOMAINS = True
 X_FRAME_OPTIONS = "DENY"
 ```
 
-## Static Files
+## Static and Media Files
 
-Static files are handled through:
+Static and media files are handled efficiently for production performance:
 
 1. **Tailwind CSS**: Built in `node-builder` stage
 2. **Collectstatic**: Run in `python-builder` stage
-3. **WhiteNoise**: Serves files at runtime from `staticfiles/`
+3. **Nginx Volumes**: Nginx natively serves `/staticfiles/` and `/media/` from shared Docker volumes without waking up Python workers
+4. **WhiteNoise Fallback**: Configured to serve files smoothly via Django or S3 if Nginx misses them
 
 ## Database Migrations
 
@@ -167,7 +169,7 @@ just prod-migrate
 - [ ] Configure `ALLOWED_HOSTS`
 - [ ] Set `CSRF_TRUSTED_ORIGINS`
 - [ ] Configure PostgreSQL database
-- [ ] Set up Redis for Celery and Channels
-- [ ] Configure HTTPS/SSL (or set `SECURE_SSL_REDIRECT=false` for testing)
+- [ ] Ensure Redis is configured for Celery and Channels
+- [ ] Configure HTTPS/SSL natively in `nginx/default.conf` (or via Cloudflare/Load Balancer)
 - [ ] Set up monitoring/logging
-- [ ] Configure reverse proxy (nginx/traefik) for SSL termination and WebSocket proxying
+- [ ] Verify database backup scripts (`db-backup`, `db-restore`, `db-backup-list`)

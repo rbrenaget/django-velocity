@@ -1,0 +1,7 @@
+- [ ] Add a backup strategy for the database.
+- [ ] Improve Dockerfile with separated scripts.
+- [ ] Add a CI/CD pipeline for automated testing and deployment.
+- [ ] Add a monitoring strategy for the application.
+- [ ] Add a strategy for secrets management.
+- [ ] Use hardened Docker images for production.
+- [ ] Create a cookiecutter template for the project.

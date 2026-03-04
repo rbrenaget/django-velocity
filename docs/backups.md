@@ -9,6 +9,7 @@ just db-backup          # Create a backup (no downtime)
 just db-backup-list     # List available backups
 just db-restore <file>  # Restore from backup (causes downtime)
 just db-backup-cleanup  # Remove old backups
+just db-backup-rm <file> # Remove specific backup file
 ```
 
 ## How It Works
@@ -61,15 +62,17 @@ docker volume inspect django-velocity_backup-data
 
 ## Scripts
 
-The backup system consists of three bash scripts in `scripts/`:
+The backup system consists of five bash scripts built directly into the custom PostgreSQL Docker image (`dockerfiles/production/postgres/Dockerfile`):
 
-| Script | Purpose |
-|--------|---------|
-| `scripts/backup.sh` | `pg_dump` with compression |
-| `scripts/restore.sh` | Drop + recreate DB + `pg_restore` |
-| `scripts/cleanup.sh` | Prune by age and count |
+| Command    | Purpose                                 |
+|------------|-----------------------------------------|
+| `backup`   | `pg_dump` with custom format compression|
+| `restore`  | Drop + recreate DB + `pg_restore`       |
+| `list`     | View backups with sizes and dates       |
+| `cleanup`  | Prune backups by max age and count      |
+| `rmbackup` | Delete a specific backup file           |
 
-These scripts run inside the PostgreSQL container where `pg_dump`/`pg_restore` are natively available. They are mounted read-only via `./scripts:/scripts:ro` in Docker Compose.
+These scripts run natively inside the PostgreSQL container and are available globally in `/usr/local/bin/`.
 
 ## Configuration
 

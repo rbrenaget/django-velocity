@@ -4,13 +4,13 @@
 # Restores a pg_dump backup. DESTRUCTIVE: drops and recreates the database.
 # App services must be stopped BEFORE running this script.
 #
-# Usage: /scripts/restore.sh <filename>
-# Example: /scripts/restore.sh velocity_2026-02-10_095800.dump
+# Usage: restore <filename>
+# Example: restore velocity_2026-02-10_095800.dump
 # =============================================================================
 
 set -euo pipefail
 
-BACKUP_DIR="/backups"
+BACKUP_DIR="${BACKUP_DIR:-/backups}"
 DB_NAME="${POSTGRES_DB:-velocity}"
 DB_USER="${POSTGRES_USER:-postgres}"
 
@@ -19,10 +19,7 @@ if [ $# -eq 0 ]; then
     echo "Usage: $0 <filename>"
     echo ""
     echo "Available backups:"
-    ls -1t "${BACKUP_DIR}"/*.dump 2>/dev/null | while read -r f; do
-        SIZE=$(du -h "$f" | cut -f1)
-        echo "  $(basename "$f")  (${SIZE})"
-    done
+    list
     exit 1
 fi
 

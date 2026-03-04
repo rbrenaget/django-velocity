@@ -130,6 +130,20 @@ fix-perms:
 health:
     @curl -s http://localhost:8000/health/ | python -m json.tool || echo "Health check failed"
 
+# Clean Python build and cache artifacts from local host machine
+clean:
+    @echo "🧹 Cleaning Python artifacts..."
+    find . -type f -name "*.py[co]" -delete
+    find . -type d -name "__pycache__" -exec rm -rf {} +
+    find . -type d -name ".pytest_cache" -exec rm -rf {} +
+    find . -type d -name ".mypy_cache" -exec rm -rf {} +
+    find . -type d -name ".ruff_cache" -exec rm -rf {} +
+    find . -type f -name ".coverage" -delete
+    find . -type f -name ".coverage.*" -delete
+    find . -type d -name "htmlcov" -exec rm -rf {} +
+    rm -rf build/ dist/ *.egg-info/ .eggs/
+    @echo "✅ Python artifacts cleaned."
+
 # =============================================================================
 # Translations
 # =============================================================================
@@ -167,7 +181,7 @@ tailwind *args:
 
 # Create a database backup (non-blocking, no downtime)
 db-backup:
-    {{ compose }} exec db /scripts/backup.sh
+    {{ compose }} exec db backup
 
 # Restore from a backup (⚠️ stops services → restore → restarts)
 db-restore filename:
@@ -175,17 +189,21 @@ db-restore filename:
     @echo "   Press Ctrl+C to cancel, or wait 5 seconds to continue..."
     @sleep 5
     {{ compose }} stop web celery-worker celery-beat
-    {{ compose }} exec db /scripts/restore.sh {{ filename }}
+    {{ compose }} exec db restore {{ filename }}
     {{ compose }} start web celery-worker celery-beat
     @echo "🟢 All services restarted."
 
 # List available backups
 db-backup-list:
-    {{ compose }} exec db ls -lht /backups/
+    {{ compose }} exec db list
 
 # Cleanup old backups (age + count limits)
 db-backup-cleanup:
-    {{ compose }} exec db /scripts/cleanup.sh
+    {{ compose }} exec db cleanup
+
+# Remove specific backup
+db-backup-rm filename:
+    {{ compose }} exec db rmbackup {{ filename }}
 
 # =============================================================================
 # Production Shortcuts
