@@ -26,7 +26,7 @@ class RegisterView(APIView):
     """
     User registration endpoint.
 
-    POST /api/v1/auth/register/
+    POST /api/auth/register/
     """
 
     permission_classes = [AllowAny]
@@ -52,7 +52,7 @@ class LoginView(APIView):
     """
     User login endpoint - returns JWT tokens.
 
-    POST /api/v1/auth/login/
+    POST /api/auth/login/
     """
 
     permission_classes = [AllowAny]
@@ -76,7 +76,7 @@ class ForgotPasswordView(APIView):
     """
     Request password reset endpoint (uses allauth).
 
-    POST /api/v1/auth/forgot-password/
+    POST /api/auth/forgot-password/
     """
 
     permission_classes = [AllowAny]
@@ -101,7 +101,7 @@ class ResetPasswordView(APIView):
     """
     Confirm password reset endpoint.
 
-    POST /api/v1/auth/reset-password/
+    POST /api/auth/reset-password/
     """
 
     permission_classes = [AllowAny]
@@ -126,7 +126,7 @@ class VerifyEmailView(APIView):
     """
     Email verification endpoint (uses allauth).
 
-    POST /api/v1/auth/verify-email/
+    POST /api/auth/verify-email/
     """
 
     permission_classes = [AllowAny]

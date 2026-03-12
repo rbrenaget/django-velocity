@@ -7,7 +7,7 @@ Endpoints for user registration, login, and password management.
 Create a new user account.
 
 ```http
-POST /api/v1/auth/register/
+POST /api/auth/register/
 ```
 
 ### Request Body
@@ -43,7 +43,7 @@ POST /api/v1/auth/register/
 Authenticate and receive JWT tokens.
 
 ```http
-POST /api/v1/auth/login/
+POST /api/auth/login/
 ```
 
 ### Request Body
@@ -71,7 +71,7 @@ POST /api/v1/auth/login/
 Get a new access token using the refresh token.
 
 ```http
-POST /api/v1/auth/token/refresh/
+POST /api/auth/token/refresh/
 ```
 
 ### Request Body
@@ -97,7 +97,7 @@ POST /api/v1/auth/token/refresh/
 Request a password reset email.
 
 ```http
-POST /api/v1/auth/forgot-password/
+POST /api/auth/forgot-password/
 ```
 
 ### Request Body
@@ -123,7 +123,7 @@ POST /api/v1/auth/forgot-password/
 Reset password using the token from email.
 
 ```http
-POST /api/v1/auth/reset-password/
+POST /api/auth/reset-password/
 ```
 
 ### Request Body
@@ -153,7 +153,7 @@ Change password for authenticated user.
     This endpoint requires a valid access token.
 
 ```http
-POST /api/v1/auth/change-password/
+POST /api/auth/change-password/
 Authorization: Bearer <access_token>
 ```
 

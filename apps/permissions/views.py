@@ -29,8 +29,8 @@ from .serializers import (
 
 class GroupListCreateApi(APIView):
     """
-    GET  /api/v1/permissions/groups/ - List all groups
-    POST /api/v1/permissions/groups/ - Create a new group
+    GET  /api/permissions/groups/ - List all groups
+    POST /api/permissions/groups/ - Create a new group
     """
 
     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -56,9 +56,9 @@ class GroupListCreateApi(APIView):
 
 class GroupDetailApi(APIView):
     """
-    GET    /api/v1/permissions/groups/<id>/ - Get group detail
-    PUT    /api/v1/permissions/groups/<id>/ - Update group
-    DELETE /api/v1/permissions/groups/<id>/ - Delete group
+    GET    /api/permissions/groups/<id>/ - Get group detail
+    PUT    /api/permissions/groups/<id>/ - Update group
+    DELETE /api/permissions/groups/<id>/ - Delete group
     """
 
     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -100,8 +100,8 @@ class GroupDetailApi(APIView):
 
 class GroupMembershipApi(APIView):
     """
-    POST   /api/v1/permissions/groups/members/ - Add user to group
-    DELETE /api/v1/permissions/groups/members/ - Remove user from group
+    POST   /api/permissions/groups/members/ - Add user to group
+    DELETE /api/permissions/groups/members/ - Remove user from group
     """
 
     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -148,7 +148,7 @@ class GroupMembershipApi(APIView):
 
 class PermissionAssignApi(APIView):
     """
-    POST /api/v1/permissions/assign/ - Assign permission to user on object
+    POST /api/permissions/assign/ - Assign permission to user on object
     """
 
     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -182,7 +182,7 @@ class PermissionAssignApi(APIView):
 
 class PermissionRevokeApi(APIView):
     """
-    POST /api/v1/permissions/revoke/ - Revoke permission from user on object
+    POST /api/permissions/revoke/ - Revoke permission from user on object
     """
 
     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -213,7 +213,7 @@ class PermissionRevokeApi(APIView):
 
 class PermissionAssignBulkApi(APIView):
     """
-    POST /api/v1/permissions/assign-bulk/ - Assign multiple permissions
+    POST /api/permissions/assign-bulk/ - Assign multiple permissions
     """
 
     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -247,7 +247,7 @@ class PermissionAssignBulkApi(APIView):
 
 class PermissionCheckApi(APIView):
     """
-    POST /api/v1/permissions/check/ - Check if user has permission
+    POST /api/permissions/check/ - Check if user has permission
     """
 
     permission_classes = [IsAuthenticated]
@@ -287,7 +287,7 @@ class PermissionCheckApi(APIView):
 
 class UserPermissionsApi(APIView):
     """
-    GET /api/v1/permissions/users/<user_id>/objects/<content_type>/<object_id>/
+    GET /api/permissions/users/<user_id>/objects/<content_type>/<object_id>/
     List all permissions a user has on an object.
     """
 

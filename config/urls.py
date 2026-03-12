@@ -13,9 +13,9 @@ urlpatterns = [
     path("health/live/", health_check_simple, name="health_check_simple"),
     # Admin
     path("admin/", admin.site.urls),
-    # API v1 - DRF endpoints
-    path("api/v1/auth/", include("apps.authentication.urls")),
-    path("api/v1/users/", include("apps.users.urls")),
-    path("api/v1/permissions/", include("apps.permissions.urls")),
-    path("api/v1/security/", include("apps.security.urls")),
+    # API - DRF endpoints
+    path("api/auth/", include("apps.authentication.urls")),
+    path("api/users/", include("apps.users.urls")),
+    path("api/permissions/", include("apps.permissions.urls")),
+    path("api/security/", include("apps.security.urls")),
 ]

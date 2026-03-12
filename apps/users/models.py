@@ -21,7 +21,7 @@ class UserManager(BaseUserManager["User"]):
         email: str,
         password: str | None = None,
         **extra_fields,
-    ) -> "User":
+    ) -> User:
         """
         Create and save a regular user with the given email and password.
         """
@@ -42,7 +42,7 @@ class UserManager(BaseUserManager["User"]):
         email: str,
         password: str | None = None,
         **extra_fields,
-    ) -> "User":
+    ) -> User:
         """
         Create and save a superuser with the given email and password.
         """
@@ -90,7 +90,7 @@ class User(AbstractUser, BaseModel):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []  # Email is already required by USERNAME_FIELD
 
-    objects: UserManager["User"] = UserManager()
+    objects: UserManager[User] = UserManager()
 
     class Meta:
         verbose_name = "user"

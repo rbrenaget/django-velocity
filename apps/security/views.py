@@ -23,7 +23,7 @@ from .serializers import (
 
 class SessionListApi(APIView):
     """
-    GET /api/v1/security/sessions/
+    GET /api/security/sessions/
     List all active sessions for the current user.
     """
 
@@ -51,7 +51,7 @@ class SessionListApi(APIView):
 
 class SessionRevokeApi(APIView):
     """
-    DELETE /api/v1/security/sessions/<session_key>/
+    DELETE /api/security/sessions/<session_key>/
     Revoke a specific session.
     """
 
@@ -69,7 +69,7 @@ class SessionRevokeApi(APIView):
 
 class SessionRevokeAllApi(APIView):
     """
-    POST /api/v1/security/sessions/revoke-all/
+    POST /api/security/sessions/revoke-all/
     Revoke all sessions except optionally the current one.
     """
 
@@ -92,7 +92,7 @@ class SessionRevokeAllApi(APIView):
 
 class DataExportApi(APIView):
     """
-    POST /api/v1/security/gdpr/export/
+    POST /api/security/gdpr/export/
     Export all user data for GDPR compliance.
     """
 
@@ -106,7 +106,7 @@ class DataExportApi(APIView):
 
 class DeleteAccountApi(APIView):
     """
-    POST /api/v1/security/gdpr/delete-account/
+    POST /api/security/gdpr/delete-account/
     Permanently delete user account.
     """
 
@@ -134,8 +134,8 @@ class DeleteAccountApi(APIView):
 
 class IPAllowlistListCreateApi(APIView):
     """
-    GET  /api/v1/security/ip-allowlist/ - List IP allowlist
-    POST /api/v1/security/ip-allowlist/ - Add IP to allowlist
+    GET  /api/security/ip-allowlist/ - List IP allowlist
+    POST /api/security/ip-allowlist/ - Add IP to allowlist
     """
 
     permission_classes = [IsAuthenticated, IsAdminUser]
@@ -163,7 +163,7 @@ class IPAllowlistListCreateApi(APIView):
 
 class IPAllowlistDetailApi(APIView):
     """
-    DELETE /api/v1/security/ip-allowlist/<ip_address>/
+    DELETE /api/security/ip-allowlist/<ip_address>/
     Remove IP from allowlist.
     """
 

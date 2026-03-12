@@ -46,7 +46,7 @@ just createsuperuser
 ### 5. Access the Application
 
 - **Admin Panel**: [http://localhost:8000/admin/](http://localhost:8000/admin/)
-- **API**: [http://localhost:8000/api/v1/](http://localhost:8000/api/v1/)
+- **API**: [http://localhost:8000/api/](http://localhost:8000/api/)
 
 ## Development Commands
 

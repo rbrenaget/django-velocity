@@ -10,7 +10,7 @@ Endpoints for user profile management.
 Retrieve the authenticated user's profile.
 
 ```http
-GET /api/v1/users/me/
+GET /api/users/me/
 Authorization: Bearer <access_token>
 ```
 
@@ -34,7 +34,7 @@ Authorization: Bearer <access_token>
 Update the authenticated user's profile information.
 
 ```http
-PATCH /api/v1/users/me/
+PATCH /api/users/me/
 Authorization: Bearer <access_token>
 ```
 

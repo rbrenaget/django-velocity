@@ -202,24 +202,24 @@ class RegisterView(APIView):
 
 ## 🔌 API Endpoints
 
-### Authentication (`/api/v1/auth/`)
+### Authentication (`/api/auth/`)
 
-| Method | Endpoint                       | Description             |
-|--------|--------------------------------|-------------------------|
-| POST   | `/api/v1/auth/register/`       | Register new user       |
-| POST   | `/api/v1/auth/login/`          | Login, get JWT tokens   |
-| POST   | `/api/v1/auth/token/refresh/`  | Refresh access token    |
-| POST   | `/api/v1/auth/forgot-password/`| Request password reset  |
-| POST   | `/api/v1/auth/reset-password/` | Confirm password reset  |
-| POST   | `/api/v1/auth/verify-email/`   | Verify email address    |
-| POST   | `/api/v1/auth/change-password/`| Change password (auth)  |
+| Method | Endpoint                      | Description             |
+|--------|-------------------------------|-------------------------|
+| POST   | `/api/auth/register/`         | Register new user       |
+| POST   | `/api/auth/login/`            | Login, get JWT tokens   |
+| POST   | `/api/auth/token/refresh/`    | Refresh access token    |
+| POST   | `/api/auth/forgot-password/`  | Request password reset  |
+| POST   | `/api/auth/reset-password/`   | Confirm password reset  |
+| POST   | `/api/auth/verify-email/`     | Verify email address    |
+| POST   | `/api/auth/change-password/`  | Change password (auth)  |
 
-### User Management (`/api/v1/users/`)
+### User Management (`/api/users/`)
 
-| Method | Endpoint                       | Description          |
-|--------|--------------------------------|----------------------|
-| GET    | `/api/v1/users/me/`            | Get current user     |
-| PATCH  | `/api/v1/users/me/`            | Update profile       |
+| Method | Endpoint                      | Description          |
+|--------|-------------------------------|----------------------|
+| GET    | `/api/users/me/`              | Get current user     |
+| PATCH  | `/api/users/me/`              | Update profile       |
 
 
 

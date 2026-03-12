@@ -22,9 +22,9 @@ Users can view and manage their active sessions.
 ### API Endpoints
 
 ```
-GET    /api/v1/security/sessions/           # List active sessions
-DELETE /api/v1/security/sessions/<key>/     # Revoke specific session
-POST   /api/v1/security/sessions/revoke-all/ # Revoke all other sessions
+GET    /api/security/sessions/           # List active sessions
+DELETE /api/security/sessions/<key>/     # Revoke specific session
+POST   /api/security/sessions/revoke-all/ # Revoke all other sessions
 ```
 
 ### Example Response
@@ -55,9 +55,9 @@ Restrict admin panel access to trusted IP addresses.
 ### API Endpoints (Admin Only)
 
 ```
-GET  /api/v1/security/ip-allowlist/         # List all entries
-POST /api/v1/security/ip-allowlist/         # Add IP
-DELETE /api/v1/security/ip-allowlist/<ip>/  # Remove IP
+GET  /api/security/ip-allowlist/         # List all entries
+POST /api/security/ip-allowlist/         # Add IP
+DELETE /api/security/ip-allowlist/<ip>/  # Remove IP
 ```
 
 ### Configuration
@@ -136,7 +136,7 @@ Services and endpoints for data privacy compliance.
 ### Data Export
 
 ```
-POST /api/v1/security/gdpr/export/
+POST /api/security/gdpr/export/
 ```
 
 Returns all user data as JSON:
@@ -148,7 +148,7 @@ Returns all user data as JSON:
 ### Account Deletion
 
 ```
-POST /api/v1/security/gdpr/delete-account/
+POST /api/security/gdpr/delete-account/
 Content-Type: application/json
 
 {

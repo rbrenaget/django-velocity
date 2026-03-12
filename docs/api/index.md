@@ -7,7 +7,7 @@ Django Velocity provides RESTful APIs built with Django REST Framework.
 All API endpoints are prefixed with:
 
 ```
-/api/v1/
+/api/
 ```
 
 ## Authentication
@@ -24,13 +24,13 @@ Authorization: Bearer <access_token>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| POST | `/api/v1/auth/register/` | Register new user |
-| POST | `/api/v1/auth/login/` | Login, get JWT tokens |
-| POST | `/api/v1/auth/token/refresh/` | Refresh access token |
-| POST | `/api/v1/auth/forgot-password/` | Request password reset |
-| POST | `/api/v1/auth/reset-password/` | Confirm password reset |
-| POST | `/api/v1/auth/verify-email/` | Verify email address |
-| POST | `/api/v1/auth/change-password/` | Change password (auth required) |
+| POST | `/api/auth/register/` | Register new user |
+| POST | `/api/auth/login/` | Login, get JWT tokens |
+| POST | `/api/auth/token/refresh/` | Refresh access token |
+| POST | `/api/auth/forgot-password/` | Request password reset |
+| POST | `/api/auth/reset-password/` | Confirm password reset |
+| POST | `/api/auth/verify-email/` | Verify email address |
+| POST | `/api/auth/change-password/` | Change password (auth required) |
 
 [Learn more →](authentication.md)
 
@@ -38,8 +38,8 @@ Authorization: Bearer <access_token>
 
 | Method | Endpoint | Description |
 |--------|----------|-------------|
-| GET | `/api/v1/users/me/` | Get current user |
-| PATCH | `/api/v1/users/me/` | Update profile |
+| GET | `/api/users/me/` | Get current user |
+| PATCH | `/api/users/me/` | Update profile |
 
 [Learn more →](users.md)
 

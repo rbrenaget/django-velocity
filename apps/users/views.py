@@ -23,8 +23,8 @@ class MeView(APIView):
     """
     Current user profile endpoint.
 
-    GET /api/v1/users/me/ - Get current user
-    PATCH /api/v1/users/me/ - Update current user
+    GET /api/users/me/ - Get current user
+    PATCH /api/users/me/ - Update current user
     """
 
     permission_classes = [IsAuthenticated]
@@ -54,7 +54,7 @@ class ChangePasswordView(APIView):
     """
     Change password for authenticated user.
 
-    POST /api/v1/users/me/change-password/
+    POST /api/users/me/change-password/
     """
 
     permission_classes = [IsAuthenticated]
@@ -79,7 +79,7 @@ class UserListApi(APIView):
     """
     List all active users (admin only in production).
 
-    GET /api/v1/users/
+    GET /api/users/
     """
 
     permission_classes = [IsAuthenticated]

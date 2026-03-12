@@ -105,7 +105,7 @@ class TestAdminIPRestrictionMiddleware:
         """Should allow non-admin paths even when IP not in allowlist."""
         AdminIPAllowlist.objects.create(ip_address="192.168.1.100", is_active=True)
         middleware = AdminIPRestrictionMiddleware(get_response)
-        request = request_factory.get("/api/v1/users/")
+        request = request_factory.get("/api/users/")
         request.META["REMOTE_ADDR"] = "192.168.1.200"
 
         response = middleware(request)
