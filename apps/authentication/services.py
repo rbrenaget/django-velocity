@@ -209,7 +209,7 @@ def confirm_password_reset(*, token: str, uid: str, new_password: str) -> User:
     try:
         user_id = urlsafe_base64_decode(uid).decode()
         user = User.objects.get(pk=user_id)
-    except (TypeError, ValueError, User.DoesNotExist):
+    except TypeError, ValueError, User.DoesNotExist:
         raise ValidationError(
             message="Invalid reset link.",
         ) from None

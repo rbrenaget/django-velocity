@@ -266,7 +266,7 @@ def user_export_data(*, user: User) -> dict[str, Any]:
     Returns:
         Dict containing all user data
     """
-    export_data = {
+    export_data: dict[str, Any] = {
         "exported_at": timezone.now().isoformat(),
         "user": {
             "email": user.email,

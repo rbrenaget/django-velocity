@@ -39,7 +39,7 @@ class TestGroupUpdate:
     def test_updates_group_name(self):
         group = GroupFactory(name="OldName")
 
-        updated = services.group_update(group=group, name="NewName")
+        updated = services.group_update(group=group, name="NewName")  # type: ignore
 
         assert updated.name == "NewName"
 
@@ -48,7 +48,7 @@ class TestGroupUpdate:
         group = GroupFactory(name="MyGroup")
 
         with pytest.raises(ValidationError):
-            services.group_update(group=group, name="ExistingGroup")
+            services.group_update(group=group, name="ExistingGroup")  # type: ignore
 
 
 @pytest.mark.django_db
@@ -57,9 +57,9 @@ class TestGroupDelete:
 
     def test_deletes_group(self):
         group = GroupFactory()
-        group_id = group.id
+        group_id = group.id  # type: ignore
 
-        services.group_delete(group=group)
+        services.group_delete(group=group)  # type: ignore
 
         assert not Group.objects.filter(id=group_id).exists()
 
@@ -72,10 +72,10 @@ class TestPermissionAssign:
         user = UserFactory()
 
         # Assign permission on user object itself (for testing)
-        services.permission_assign(user=user, permission="view", obj=user)
+        services.permission_assign(user=user, permission="view", obj=user)  # type: ignore
 
         # Check via guardian
-        assert user.has_perm("view", user)
+        assert user.has_perm("view", user)  # type: ignore
 
 
 @pytest.mark.django_db
@@ -85,11 +85,11 @@ class TestPermissionRevoke:
     def test_revokes_permission_from_user(self):
         user = UserFactory()
 
-        services.permission_assign(user=user, permission="view", obj=user)
-        assert user.has_perm("view", user)
+        services.permission_assign(user=user, permission="view", obj=user)  # type: ignore
+        assert user.has_perm("view", user)  # type: ignore
 
-        services.permission_revoke(user=user, permission="view", obj=user)
-        assert not user.has_perm("view", user)
+        services.permission_revoke(user=user, permission="view", obj=user)  # type: ignore
+        assert not user.has_perm("view", user)  # type: ignore
 
 
 @pytest.mark.django_db
@@ -100,18 +100,18 @@ class TestUserGroupMembership:
         user = UserFactory()
         group = GroupFactory()
 
-        services.user_add_to_group(user=user, group=group)
+        services.user_add_to_group(user=user, group=group)  # type: ignore
 
-        assert user.groups.filter(pk=group.pk).exists()
+        assert user.groups.filter(pk=group.pk).exists()  # type: ignore
 
     def test_remove_user_from_group(self):
         user = UserFactory()
         group = GroupFactory()
-        user.groups.add(group)
+        user.groups.add(group)  # type: ignore
 
-        services.user_remove_from_group(user=user, group=group)
+        services.user_remove_from_group(user=user, group=group)  # type: ignore
 
-        assert not user.groups.filter(pk=group.pk).exists()
+        assert not user.groups.filter(pk=group.pk).exists()  # type: ignore
 
 
 @pytest.mark.django_db
@@ -122,25 +122,27 @@ class TestBulkPermissions:
         user = UserFactory()
 
         services.permissions_assign_bulk(
-            user=user,
+            user=user,  # type: ignore
             permissions=["view", "change"],
-            obj=user,
+            obj=user,  # type: ignore
         )
 
-        assert user.has_perm("view", user)
-        assert user.has_perm("change", user)
+        assert user.has_perm("view", user)  # type: ignore
+        assert user.has_perm("change", user)  # type: ignore
 
     def test_revokes_multiple_permissions(self):
         user = UserFactory()
         services.permissions_assign_bulk(
-            user=user, permissions=["view", "change"], obj=user
+            user=user,
+            permissions=["view", "change"],
+            obj=user,  # type: ignore
         )
 
         services.permissions_revoke_bulk(
-            user=user,
+            user=user,  # type: ignore
             permissions=["view", "change"],
-            obj=user,
+            obj=user,  # type: ignore
         )
 
-        assert not user.has_perm("view", user)
-        assert not user.has_perm("change", user)
+        assert not user.has_perm("view", user)  # type: ignore
+        assert not user.has_perm("change", user)  # type: ignore

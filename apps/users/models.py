@@ -32,7 +32,7 @@ class UserManager(BaseUserManager["User"]):
         extra_fields.setdefault("is_staff", False)
         extra_fields.setdefault("is_superuser", False)
 
-        user = self.model(email=email, **extra_fields)
+        user: User = self.model(email=email, **extra_fields)
         user.set_password(password)
         user.save(using=self._db)
         return user
@@ -90,7 +90,7 @@ class User(AbstractUser, BaseModel):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []  # Email is already required by USERNAME_FIELD
 
-    objects: UserManager[User] = UserManager()
+    objects = UserManager()  # type: ignore[assignment,misc]
 
     class Meta:
         verbose_name = "user"

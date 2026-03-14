@@ -3,10 +3,9 @@ Project-wide pytest configuration and fixtures.
 """
 
 import pytest
-from django.contrib.auth import get_user_model
 from rest_framework.test import APIClient
 
-User = get_user_model()
+from apps.users.models import User
 
 
 @pytest.fixture

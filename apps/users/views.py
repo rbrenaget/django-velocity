@@ -40,7 +40,7 @@ class MeView(APIView):
         serializer.is_valid(raise_exception=True)
 
         user = services.user_update(
-            user=request.user,
+            user=request.user,  # type: ignore[arg-type]
             **serializer.validated_data,
         )
 
@@ -64,7 +64,7 @@ class ChangePasswordView(APIView):
         serializer.is_valid(raise_exception=True)
 
         services.user_change_password(
-            user=request.user,
+            user=request.user,  # type: ignore[arg-type]
             current_password=serializer.validated_data["current_password"],
             new_password=serializer.validated_data["new_password"],
         )

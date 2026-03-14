@@ -32,7 +32,7 @@ DATABASES = {
 # Disable Throttling for Tests
 # =============================================================================
 REST_FRAMEWORK["DEFAULT_THROTTLE_CLASSES"] = []
-REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {}
+REST_FRAMEWORK["DEFAULT_THROTTLE_RATES"] = {}  # type: ignore[assignment]
 
 # =============================================================================
 # Email Backend

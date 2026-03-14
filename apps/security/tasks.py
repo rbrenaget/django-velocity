@@ -3,11 +3,12 @@ Security Tasks - Celery tasks for security maintenance.
 """
 
 import logging
+from datetime import timedelta
 
 from django.conf import settings
 from django.contrib.auth import get_user_model
 from django.contrib.sessions.models import Session
-from django.utils import timezone
+from django.utils.timezone import now
 
 from apps.security.models import UserSession
 from apps.security.services import user_export_data
@@ -30,7 +31,7 @@ def cleanup_expired_sessions() -> int:
         Number of sessions cleaned up
     """
     timeout_seconds = getattr(settings, "SESSION_INACTIVITY_TIMEOUT", 604800)
-    cutoff = timezone.now() - timezone.timedelta(seconds=timeout_seconds)
+    cutoff = now() - timedelta(seconds=timeout_seconds)
 
     inactive_sessions = UserSession.objects.filter(
         is_active=True,

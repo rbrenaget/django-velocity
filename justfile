@@ -93,8 +93,12 @@ fmt:
 fmt-check:
     uv run ruff format --check .
 
+# Run type checking with mypy
+type-check:
+    uv run mypy .
+
 # Run all quality checks
-check: lint fmt-check
+check: lint fmt-check type-check
 
 # Fix all auto-fixable issues
 fix:

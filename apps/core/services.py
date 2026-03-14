@@ -84,6 +84,6 @@ def get_object_or_raise(
     """
 
     try:
-        return model_class.objects.get(**lookup_kwargs)
-    except model_class.DoesNotExist as e:
+        return model_class.objects.get(**lookup_kwargs)  # type: ignore[attr-defined]
+    except model_class.DoesNotExist as e:  # type: ignore[attr-defined]
         raise exception_class(message) from e

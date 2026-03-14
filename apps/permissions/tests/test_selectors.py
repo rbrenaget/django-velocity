@@ -18,7 +18,7 @@ class TestGroupGetById:
     def test_returns_group_when_exists(self):
         group = GroupFactory()
 
-        result = selectors.group_get_by_id(group_id=group.id)
+        result = selectors.group_get_by_id(group_id=group.id)  # type: ignore
 
         assert result == group
 
@@ -60,9 +60,9 @@ class TestGroupListForUser:
         user = UserFactory()
         group1 = GroupFactory()
         group2 = GroupFactory()
-        user.groups.add(group1, group2)
+        user.groups.add(group1, group2)  # type: ignore
 
-        result = selectors.group_list_for_user(user=user)
+        result = selectors.group_list_for_user(user=user)  # type: ignore
 
         assert set(result) == {group1, group2}
 
@@ -73,16 +73,16 @@ class TestPermissionCheck:
 
     def test_returns_true_when_user_has_permission(self):
         user = UserFactory()
-        services.permission_assign(user=user, permission="view", obj=user)
+        services.permission_assign(user=user, permission="view", obj=user)  # type: ignore
 
-        result = selectors.permission_check(user=user, permission="view", obj=user)
+        result = selectors.permission_check(user=user, permission="view", obj=user)  # type: ignore
 
         assert result is True
 
     def test_returns_false_when_user_lacks_permission(self):
         user = UserFactory()
 
-        result = selectors.permission_check(user=user, permission="view", obj=user)
+        result = selectors.permission_check(user=user, permission="view", obj=user)  # type: ignore
 
         assert result is False
 
@@ -94,10 +94,12 @@ class TestPermissionListForUser:
     def test_returns_all_permissions_on_object(self):
         user = UserFactory()
         services.permissions_assign_bulk(
-            user=user, permissions=["view", "change"], obj=user
+            user=user,  # type: ignore[arg-type]
+            permissions=["view", "change"],
+            obj=user,  # type: ignore[arg-type]
         )
 
-        result = selectors.permission_list_for_user(user=user, obj=user)
+        result = selectors.permission_list_for_user(user=user, obj=user)  # type: ignore[arg-type]
 
         assert set(result) == {"view", "change"}
 
@@ -109,9 +111,9 @@ class TestUserInGroup:
     def test_returns_true_when_user_in_group(self):
         user = UserFactory()
         group = GroupFactory()
-        user.groups.add(group)
+        user.groups.add(group)  # type: ignore
 
-        result = selectors.user_in_group(user=user, group=group)
+        result = selectors.user_in_group(user=user, group=group)  # type: ignore
 
         assert result is True
 
@@ -119,6 +121,6 @@ class TestUserInGroup:
         user = UserFactory()
         group = GroupFactory()
 
-        result = selectors.user_in_group(user=user, group=group)
+        result = selectors.user_in_group(user=user, group=group)  # type: ignore
 
         assert result is False

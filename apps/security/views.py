@@ -30,7 +30,7 @@ class SessionListApi(APIView):
     permission_classes = [IsAuthenticated]
 
     def get(self, request: Request) -> Response:
-        sessions = selectors.session_list_for_user(user=request.user, active_only=True)
+        sessions = selectors.session_list_for_user(user=request.user, active_only=True)  # type: ignore[arg-type]
 
         data = []
         for session in sessions:
@@ -63,7 +63,7 @@ class SessionRevokeApi(APIView):
                 message="Cannot revoke your current session. Use logout instead."
             )
 
-        services.session_revoke(user=request.user, session_key=session_key)
+        services.session_revoke(user=request.user, session_key=session_key)  # type: ignore[arg-type]
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -83,7 +83,7 @@ class SessionRevokeAllApi(APIView):
         except_current = request.session.session_key if keep_current else None
 
         count = services.session_revoke_all(
-            user=request.user,
+            user=request.user,  # type: ignore[arg-type]
             except_current=except_current,
         )
 
@@ -99,7 +99,7 @@ class DataExportApi(APIView):
     permission_classes = [IsAuthenticated]
 
     def post(self, request: Request) -> Response:
-        data = services.user_export_data(user=request.user)
+        data = services.user_export_data(user=request.user)  # type: ignore[arg-type]
         serializer = DataExportOutputSerializer(data)
         return Response(serializer.data)
 
@@ -122,7 +122,7 @@ class DeleteAccountApi(APIView):
             raise PermissionDenied(message="Invalid password.")
 
         services.user_delete_account(
-            user=user,
+            user=user,  # type: ignore[arg-type]
             confirmation=serializer.validated_data["confirmation"],
         )
 
@@ -152,7 +152,7 @@ class IPAllowlistListCreateApi(APIView):
         entry = services.ip_allowlist_add(
             ip_address=serializer.validated_data["ip_address"],
             description=serializer.validated_data.get("description", ""),
-            added_by=request.user,
+            added_by=request.user,  # type: ignore[arg-type]
         )
 
         return Response(
