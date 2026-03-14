@@ -290,8 +290,10 @@ DATABASE_URL=postgres://postgres:postgres@db:5432/velocity
 | ruff                        | Linting & formatting             |
 
 ## 📚 Documentation
-
-This project uses [Zensical](https://zensical.org/) for documentation generation.
+293:
+294: **Online Documentation:** [django-velocity.rbrenaget.com](https://rbrenaget.github.io/django-velocity/)
+295:
+296: This project uses [Zensical](https://zensical.org/) for documentation generation.
 
 - [Getting Started](docs/getting-started.md)
 - [Architecture](docs/architecture.md)

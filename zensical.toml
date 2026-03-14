@@ -1,7 +1,7 @@
 [project]
 site_name = "Django Velocity"
 site_description = "Modern Django Boilerplate with Service-Oriented Architecture"
-site_url = "https://django-velocity.example.com/"
+site_url = "https://rbrenaget.github.io/django-velocity/"
 copyright = "Copyright &copy; 2026 Django Velocity"
 
 [project.theme]
