@@ -133,7 +133,7 @@ class TestBulkPermissions:
     def test_revokes_multiple_permissions(self):
         user = UserFactory()
         services.permissions_assign_bulk(
-            user=user,
+            user=user,  # type: ignore[arg-type]
             permissions=["view", "change"],
             obj=user,  # type: ignore
         )
