@@ -7,9 +7,10 @@ Note: Authentication endpoints are now in apps.authentication.
 
 from rest_framework import status
 from rest_framework.permissions import IsAuthenticated
-from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
+
+from apps.core.types import AuthenticatedRequest
 
 from . import selectors, services
 from .serializers import (
@@ -29,18 +30,18 @@ class MeView(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request: Request) -> Response:
+    def get(self, request: AuthenticatedRequest) -> Response:
         return Response(
             UserOutputSerializer(request.user).data,
             status=status.HTTP_200_OK,
         )
 
-    def patch(self, request: Request) -> Response:
+    def patch(self, request: AuthenticatedRequest) -> Response:
         serializer = UserUpdateInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         user = services.user_update(
-            user=request.user,  # type: ignore[arg-type]
+            user=request.user,
             **serializer.validated_data,
         )
 
@@ -59,12 +60,12 @@ class ChangePasswordView(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def post(self, request: Request) -> Response:
+    def post(self, request: AuthenticatedRequest) -> Response:
         serializer = ChangePasswordInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         services.user_change_password(
-            user=request.user,  # type: ignore[arg-type]
+            user=request.user,
             current_password=serializer.validated_data["current_password"],
             new_password=serializer.validated_data["new_password"],
         )
@@ -84,7 +85,7 @@ class UserListApi(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request: Request) -> Response:
+    def get(self, request: AuthenticatedRequest) -> Response:
         users = selectors.user_list_active()
         return Response(
             UserOutputSerializer(users, many=True).data,

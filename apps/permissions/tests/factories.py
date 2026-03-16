@@ -11,7 +11,7 @@ from faker import Faker
 fake = Faker()
 
 
-class GroupFactory(factory.django.DjangoModelFactory):
+class GroupFactory(factory.django.DjangoModelFactory[Group]):
     """Factory for Django's Group model."""
 
     class Meta:

@@ -5,6 +5,9 @@ Uses Django's built-in Group/Permission models with django-guardian
 for object-level permission queries.
 """
 
+from collections.abc import Iterable
+from typing import cast
+
 from django.apps import apps
 from django.contrib.auth.models import Group, Permission
 from django.contrib.contenttypes.models import ContentType
@@ -113,8 +116,11 @@ def group_list_with_permission(
         List of Group instances with permissions
     """
     if permission:
-        return list(get_groups_with_perms(obj, only_with_perms_in=[permission]))  # type: ignore[arg-type]
-    return list(get_groups_with_perms(obj))  # type: ignore[arg-type]
+        groups = get_groups_with_perms(obj, only_with_perms_in=[permission])
+        return list(cast(Iterable[Group], groups))
+
+    groups = get_groups_with_perms(obj)
+    return list(cast(Iterable[Group], groups))
 
 
 def object_list_for_user(

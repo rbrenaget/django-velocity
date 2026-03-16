@@ -48,6 +48,7 @@ dev = [
     "debugpy>=1.8.19",
     "djlint>=1.36.4",
     "django-tailwind[cookiecutter,honcho,reload]>=4.4.2",
+    "pytest-factoryboy>=2.8.1",
 ]
 
 [tool.ruff]

@@ -4,11 +4,11 @@ Security Views - API endpoints for security features.
 
 from rest_framework import status
 from rest_framework.permissions import IsAdminUser, IsAuthenticated
-from rest_framework.request import Request
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from apps.core.exceptions import PermissionDenied
+from apps.core.types import AuthenticatedRequest
 
 from . import selectors, services
 from .serializers import (
@@ -29,8 +29,8 @@ class SessionListApi(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def get(self, request: Request) -> Response:
-        sessions = selectors.session_list_for_user(user=request.user, active_only=True)  # type: ignore[arg-type]
+    def get(self, request: AuthenticatedRequest) -> Response:
+        sessions = selectors.session_list_for_user(user=request.user, active_only=True)
 
         data = []
         for session in sessions:
@@ -57,13 +57,13 @@ class SessionRevokeApi(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def delete(self, request: Request, session_key: str) -> Response:
+    def delete(self, request: AuthenticatedRequest, session_key: str) -> Response:
         if session_key == request.session.session_key:
             raise PermissionDenied(
                 message="Cannot revoke your current session. Use logout instead."
             )
 
-        services.session_revoke(user=request.user, session_key=session_key)  # type: ignore[arg-type]
+        services.session_revoke(user=request.user, session_key=session_key)
         return Response(status=status.HTTP_204_NO_CONTENT)
 
 
@@ -75,7 +75,7 @@ class SessionRevokeAllApi(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def post(self, request: Request) -> Response:
+    def post(self, request: AuthenticatedRequest) -> Response:
         serializer = SessionRevokeAllInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
@@ -83,7 +83,7 @@ class SessionRevokeAllApi(APIView):
         except_current = request.session.session_key if keep_current else None
 
         count = services.session_revoke_all(
-            user=request.user,  # type: ignore[arg-type]
+            user=request.user,
             except_current=except_current,
         )
 
@@ -98,8 +98,8 @@ class DataExportApi(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def post(self, request: Request) -> Response:
-        data = services.user_export_data(user=request.user)  # type: ignore[arg-type]
+    def post(self, request: AuthenticatedRequest) -> Response:
+        data = services.user_export_data(user=request.user)
         serializer = DataExportOutputSerializer(data)
         return Response(serializer.data)
 
@@ -112,17 +112,15 @@ class DeleteAccountApi(APIView):
 
     permission_classes = [IsAuthenticated]
 
-    def post(self, request: Request) -> Response:
+    def post(self, request: AuthenticatedRequest) -> Response:
         serializer = DeleteAccountInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
-        user = request.user
-
-        if not user.check_password(serializer.validated_data["password"]):
+        if not request.user.check_password(serializer.validated_data["password"]):
             raise PermissionDenied(message="Invalid password.")
 
         services.user_delete_account(
-            user=user,  # type: ignore[arg-type]
+            user=request.user,
             confirmation=serializer.validated_data["confirmation"],
         )
 
@@ -140,19 +138,19 @@ class IPAllowlistListCreateApi(APIView):
 
     permission_classes = [IsAuthenticated, IsAdminUser]
 
-    def get(self, request: Request) -> Response:
+    def get(self, request: AuthenticatedRequest) -> Response:
         entries = selectors.ip_allowlist_list(active_only=False)
         serializer = IPAllowlistOutputSerializer(entries, many=True)
         return Response(serializer.data)
 
-    def post(self, request: Request) -> Response:
+    def post(self, request: AuthenticatedRequest) -> Response:
         serializer = IPAllowlistInputSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
 
         entry = services.ip_allowlist_add(
             ip_address=serializer.validated_data["ip_address"],
             description=serializer.validated_data.get("description", ""),
-            added_by=request.user,  # type: ignore[arg-type]
+            added_by=request.user,
         )
 
         return Response(
@@ -169,6 +167,6 @@ class IPAllowlistDetailApi(APIView):
 
     permission_classes = [IsAuthenticated, IsAdminUser]
 
-    def delete(self, request: Request, ip_address: str) -> Response:
+    def delete(self, request: AuthenticatedRequest, ip_address: str) -> Response:
         services.ip_allowlist_remove(ip_address=ip_address)
         return Response(status=status.HTTP_204_NO_CONTENT)

@@ -23,6 +23,7 @@ import logging
 from collections.abc import Callable
 from typing import Any, ParamSpec, TypeVar
 
+from django.core.exceptions import ObjectDoesNotExist
 from django.db import transaction
 from django.db.models import Model
 
@@ -84,6 +85,6 @@ def get_object_or_raise(
     """
 
     try:
-        return model_class.objects.get(**lookup_kwargs)  # type: ignore[attr-defined]
-    except model_class.DoesNotExist as e:  # type: ignore[attr-defined]
+        return model_class._default_manager.get(**lookup_kwargs)
+    except ObjectDoesNotExist as e:
         raise exception_class(message) from e

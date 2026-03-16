@@ -37,18 +37,18 @@ class TestGroupUpdate:
     """Tests for group_update service."""
 
     def test_updates_group_name(self):
-        group = GroupFactory(name="OldName")
+        group = GroupFactory.create(name="OldName")
 
-        updated = services.group_update(group=group, name="NewName")  # type: ignore
+        updated = services.group_update(group=group, name="NewName")
 
         assert updated.name == "NewName"
 
     def test_raises_validation_error_for_duplicate_name(self):
-        GroupFactory(name="ExistingGroup")
-        group = GroupFactory(name="MyGroup")
+        GroupFactory.create(name="ExistingGroup")
+        group = GroupFactory.create(name="MyGroup")
 
         with pytest.raises(ValidationError):
-            services.group_update(group=group, name="ExistingGroup")  # type: ignore
+            services.group_update(group=group, name="ExistingGroup")
 
 
 @pytest.mark.django_db
@@ -56,10 +56,10 @@ class TestGroupDelete:
     """Tests for group_delete service."""
 
     def test_deletes_group(self):
-        group = GroupFactory()
-        group_id = group.id  # type: ignore
+        group = GroupFactory.create()
+        group_id = group.id
 
-        services.group_delete(group=group)  # type: ignore
+        services.group_delete(group=group)
 
         assert not Group.objects.filter(id=group_id).exists()
 
@@ -69,13 +69,13 @@ class TestPermissionAssign:
     """Tests for permission_assign service."""
 
     def test_assigns_permission_to_user(self):
-        user = UserFactory()
+        user = UserFactory.create()
 
         # Assign permission on user object itself (for testing)
-        services.permission_assign(user=user, permission="view", obj=user)  # type: ignore
+        services.permission_assign(user=user, permission="view", obj=user)
 
         # Check via guardian
-        assert user.has_perm("view", user)  # type: ignore
+        assert user.has_perm("view", user)
 
 
 @pytest.mark.django_db
@@ -83,13 +83,13 @@ class TestPermissionRevoke:
     """Tests for permission_revoke service."""
 
     def test_revokes_permission_from_user(self):
-        user = UserFactory()
+        user = UserFactory.create()
 
-        services.permission_assign(user=user, permission="view", obj=user)  # type: ignore
-        assert user.has_perm("view", user)  # type: ignore
+        services.permission_assign(user=user, permission="view", obj=user)
+        assert user.has_perm("view", user)
 
-        services.permission_revoke(user=user, permission="view", obj=user)  # type: ignore
-        assert not user.has_perm("view", user)  # type: ignore
+        services.permission_revoke(user=user, permission="view", obj=user)
+        assert not user.has_perm("view", user)
 
 
 @pytest.mark.django_db
@@ -97,21 +97,21 @@ class TestUserGroupMembership:
     """Tests for user group membership services."""
 
     def test_add_user_to_group(self):
-        user = UserFactory()
-        group = GroupFactory()
+        user = UserFactory.create()
+        group = GroupFactory.create()
 
-        services.user_add_to_group(user=user, group=group)  # type: ignore
+        services.user_add_to_group(user=user, group=group)
 
-        assert user.groups.filter(pk=group.pk).exists()  # type: ignore
+        assert user.groups.filter(pk=group.pk).exists()
 
     def test_remove_user_from_group(self):
-        user = UserFactory()
-        group = GroupFactory()
-        user.groups.add(group)  # type: ignore
+        user = UserFactory.create()
+        group = GroupFactory.create()
+        user.groups.add(group)
 
-        services.user_remove_from_group(user=user, group=group)  # type: ignore
+        services.user_remove_from_group(user=user, group=group)
 
-        assert not user.groups.filter(pk=group.pk).exists()  # type: ignore
+        assert not user.groups.filter(pk=group.pk).exists()
 
 
 @pytest.mark.django_db
@@ -119,30 +119,30 @@ class TestBulkPermissions:
     """Tests for bulk permission operations."""
 
     def test_assigns_multiple_permissions(self):
-        user = UserFactory()
+        user = UserFactory.create()
 
         services.permissions_assign_bulk(
-            user=user,  # type: ignore
+            user=user,
             permissions=["view", "change"],
-            obj=user,  # type: ignore
+            obj=user,
         )
 
-        assert user.has_perm("view", user)  # type: ignore
-        assert user.has_perm("change", user)  # type: ignore
+        assert user.has_perm("view", user)
+        assert user.has_perm("change", user)
 
     def test_revokes_multiple_permissions(self):
-        user = UserFactory()
+        user = UserFactory.create()
         services.permissions_assign_bulk(
-            user=user,  # type: ignore[arg-type]
+            user=user,
             permissions=["view", "change"],
-            obj=user,  # type: ignore
+            obj=user,
         )
 
         services.permissions_revoke_bulk(
-            user=user,  # type: ignore
+            user=user,
             permissions=["view", "change"],
-            obj=user,  # type: ignore
+            obj=user,
         )
 
-        assert not user.has_perm("view", user)  # type: ignore
-        assert not user.has_perm("change", user)  # type: ignore
+        assert not user.has_perm("view", user)
+        assert not user.has_perm("change", user)

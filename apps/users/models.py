@@ -90,7 +90,7 @@ class User(AbstractUser, BaseModel):
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = []  # Email is already required by USERNAME_FIELD
 
-    objects = UserManager()  # type: ignore[assignment,misc]
+    objects: UserManager = UserManager()  # type: ignore[assignment,misc]
 
     class Meta:
         verbose_name = "user"
