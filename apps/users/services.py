@@ -36,7 +36,7 @@ def user_update(
     if last_name is not None:
         user.last_name = last_name
 
-    user.save(update_fields=["first_name", "last_name", "updated_at"])
+    user.save_partial(update_fields=["first_name", "last_name"])
     return user
 
 
@@ -67,7 +67,7 @@ def user_change_password(
         )
 
     user.set_password(new_password)
-    user.save(update_fields=["password", "updated_at"])
+    user.save_partial(update_fields=["password"])
 
     return user
 
@@ -84,6 +84,6 @@ def user_deactivate(*, user: User) -> User:
         The deactivated User instance
     """
     user.is_active = False
-    user.save(update_fields=["is_active", "updated_at"])
+    user.save_partial(update_fields=["is_active"])
 
     return user

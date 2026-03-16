@@ -127,7 +127,7 @@ def session_revoke(*, user: User, session_key: str) -> None:
         raise PermissionDenied(message="Cannot revoke another user's session.")
 
     session.is_active = False
-    session.save(update_fields=["is_active", "updated_at"])
+    session.save_partial(update_fields=["is_active"])
 
     # Attempt to delete the Django session too
     with contextlib.suppress(Exception):

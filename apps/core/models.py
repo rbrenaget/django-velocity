@@ -9,6 +9,8 @@ Usage:
         # Automatically includes: created_at, updated_at
 """
 
+from typing import Any
+
 from django.db import models
 
 
@@ -39,3 +41,33 @@ class BaseModel(models.Model):
 
     def __repr__(self) -> str:
         return f"<{self.__class__.__name__} pk={self.pk}>"
+
+    def save_partial(
+        self,
+        *,
+        update_fields: list[str],
+        using: str | None = None,
+        **kwargs: Any,
+    ):
+        """
+        Saves specific fields to the database while ensuring 'updated_at' is included.
+
+        This method is a safety wrapper around Django's native save(update_fields=...).
+        It prevents the common bug where 'updated_at' is not refreshed during
+        partial updates.
+
+        Args:
+            update_fields: List of field names to be updated in the database.
+            using: Name of the database alias to use.
+            **kwargs: Additional arguments passed to the native save() method
+                (e.g., force_insert, force_update).
+
+        Example:
+            >>> task.title = "New Title"
+            >>> task.save_fields(update_fields=["title"])
+        """
+        if "updated_at" not in update_fields:
+            # Use a copy to avoid using the original list
+            update_fields = list(update_fields) + ["updated_at"]
+
+        super().save(update_fields=update_fields, **kwargs)

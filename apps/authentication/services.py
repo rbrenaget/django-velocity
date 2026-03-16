@@ -225,7 +225,7 @@ def confirm_password_reset(*, token: str, uid: str, new_password: str) -> User:
         )
 
     user.set_password(new_password)
-    user.save(update_fields=["password", "updated_at"])
+    user.save_partial(update_fields=["password"])
 
     return user
 
