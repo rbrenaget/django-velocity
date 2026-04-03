@@ -68,6 +68,6 @@ class BaseModel(models.Model):
         """
         if "updated_at" not in update_fields:
             # Use a copy to avoid using the original list
-            update_fields = list(update_fields) + ["updated_at"]
+            update_fields = [*list(update_fields), "updated_at"]
 
         super().save(update_fields=update_fields, **kwargs)
