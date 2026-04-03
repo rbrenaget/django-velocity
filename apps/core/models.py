@@ -64,7 +64,7 @@ class BaseModel(models.Model):
 
         Example:
             >>> task.title = "New Title"
-            >>> task.save_fields(update_fields=["title"])
+            >>> task.save_partial(update_fields=["title"])
         """
         if "updated_at" not in update_fields:
             # Use a copy to avoid using the original list
